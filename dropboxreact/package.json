@@ -1,0 +1,38 @@
+{
+  "name": "loginreact",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "babel-polyfill": "*",
+    "crypto-js": "^3.1.9-1",
+    "history": "^2.0.0",
+    "material-ui": "^0.19.3",
+    "material-ui-image": "^2.0.0",
+    "moment": "^2.19.1",
+    "prop-types": "^15.6.0",
+    "react": "^15.6.1",
+    "react-addons-create-fragment": "^15.6.2",
+    "react-dom": "^15.6.1",
+    "react-dropzone": "^4.2.0",
+    "react-file-input": "^0.2.5",
+    "react-keyed-file-browser": "^1.0.1",
+    "react-notifications": "^1.4.3",
+    "react-redux": "^5.0.6",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.0.13",
+    "redux": "^3.7.2",
+    "redux-persist": "^4.10.1",
+    "redux-reset": "^0.3.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "bootstrap": "^3.3.7",
+    "react-bootstrap": "^0.31.3"
+  }
+}
