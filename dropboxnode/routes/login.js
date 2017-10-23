@@ -14,7 +14,7 @@ router.post('/', (req,res,next)=>{
         }
         else{
             req.session.username = user.loginData.username;
-            req.session.cookie.maxAge = 1 * 60 * 1000;
+            req.session.cookie.maxAge = 30 * 60 * 1000;
 
             console.log("session initilized");
             return res.status(201).send(user);
