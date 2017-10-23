@@ -10,7 +10,7 @@ export default {
         marginLeft: 20,
     },
     mTop:{
-        marginTop: "100px",
+        marginTop: "200px",
     },
     imageStyle : {
         height:"60px",

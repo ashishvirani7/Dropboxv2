@@ -95,7 +95,7 @@ class Home extends React.Component{
         return(
             <div className="row">
               <div className="col-md-2" style={divStyle}>
-                <center>< img src={require('../images/dropbox.png')} 
+                <center>< img src={require('../images/dropbox.svg')} 
                   style={styles.imageStyle}
                 /></center>
                 <div>

@@ -130,7 +130,7 @@ class Signup extends React.Component{
             <MuiThemeProvider muiTheme={muiTheme}>
             
                 <div className="row">
-                    <div className="col-md-6 col-md-offset-3" style={styles.mTop}>
+                    <div style={styles.mTop}>
                     <AppBar title="Signup" iconElementLeft={<IconButton><SignupAvtar /></IconButton>}
                     iconElementRight={<FlatButton label="Sign in" onClick={()=>this.handleLogin()}/>}
                     />

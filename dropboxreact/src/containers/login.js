@@ -37,9 +37,6 @@ import {
 } 
 from 'material-ui/styles/colors';
 
-const style = {
-    marginLeft: 20,
-  };
 const style2 = {
     marginTop: "150px",
   };
@@ -67,13 +64,15 @@ class Login extends React.Component{
     }
 
     componentWillMount(){
-        this.props.logout();
-        persistStore(store).purge(); 
-    
+        
         API.doSessionCheck(this.props.activeUserData.loginData)
         .then((res) => {
             if (res.status === 201) {
                     this.props.history.push("/home");
+            }
+            else{
+                persistStore(store).purge(); 
+                this.props.logout();
             }
         });
     }    
@@ -124,27 +123,27 @@ class Login extends React.Component{
     render(){
         
             return(
-                <div className="row">
+                
                     <div>
                         <MuiThemeProvider muiTheme={muiTheme}>
                         
                             <div className="row">
-                                <div className="col-md-6 col-sm-6 col-lg-6 col-md-offset-3 col-sm-offset-3 col-lg-offset-3" style={styles.mTop}>
+                                <div style={styles.mTop}>
                                 <AppBar title="Signin" iconElementLeft={<IconButton><SigninAvtar /></IconButton>}
                                     iconElementRight={<FlatButton label="Sign up" onClick={()=>this.handleSignup()}/>}/>
                                 <Paper zDepth={5}>
                                 <br/>
                                 
-                                <TextField hintText="Email address" style={style} underlineShow={false} name="username" fullWidth= {true}
-                                type="email" floatingLabelText="Enter email or username" hintText="Email" errorText={this.state.errorEmailText}
+                                <TextField hintText="Email address" style={styles.mLeft} underlineShow={false} name="username"
+                                floatingLabelText="Enter email or username" hintText="Email" errorText={this.state.errorEmailText}
                                 onChange={(event)=>
                                 {event.persist();
                                 this.props.changeValue(event);
                                 this.onEmailChange(event)}}
                                 />
                                 <br/>
-                                <TextField hintText="Password" style={style} type="password" underlineShow={false} name="password" fullWidth={true}
-                                required="true" floatingLabelText="Enter password" hintText="Password" errorText={this.state.errorPasswordText}
+                                <TextField hintText="Password" style={styles.mLeft} underlineShow={false} name="password" type="password"
+                                floatingLabelText="Enter Password" hintText="Password" errorText={this.state.errorPasswordText}
                                 onChange={(event)=>
                                 {event.persist();
                                 this.props.changeValue(event);
@@ -152,7 +151,7 @@ class Login extends React.Component{
                                 />
                                 <br/>
                                 <center>
-                                    <RaisedButton label="Submit" primary={true} style={style}
+                                    <RaisedButton label="Submit" primary={true} style={styles.mLeft}
                                     onClick={()=> this.handleSubmit(this.props.loginData)}
                                     />
                                 </center>
@@ -162,7 +161,7 @@ class Login extends React.Component{
                             </div>
                         </MuiThemeProvider>
                     </div>
-            </div>
+           
             );
     }
     
