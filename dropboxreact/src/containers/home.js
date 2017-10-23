@@ -78,7 +78,6 @@ class Home extends React.Component{
     }
 
     handleProfile(){
-        this.props.logout();
         this.props.history.push("/account");
       }
     

@@ -53,18 +53,6 @@ class CommonHome extends React.Component{
         });
     }
 
-    handleProfile(){
-        this.props.logout();
-        this.props.history.push("/account");
-      }
-    
-      redirectToHome(){
-        this.props.history.push("/home/"+this.state.path);
-      }
-    
-      redirectToLogs(){
-        this.props.history.push("/logs/"+this.state.path);
-    }
     
     render(){
         if(this.props.activeUserData.loginData){

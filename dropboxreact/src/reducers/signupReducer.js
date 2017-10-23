@@ -1,6 +1,13 @@
 import {REHYDRATE} from 'redux-persist/constants';
 
-export default function(state={},action){
+const initialState={
+    firstname:'',
+    lastname:'',
+    username:'',
+    password:'',
+}
+
+export default function(state=initialState,action){
     switch(action.type){
 
         case "CHANGE_VALUE_SIGNUP":

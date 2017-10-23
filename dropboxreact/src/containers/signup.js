@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
+import {persistStore, autoRehydrate} from 'redux-persist'
 
 import {changeValue} from '../actions/signupActions';
 import * as API from '../api/API';
+import store from '../index';
+import {logout} from '../actions/logout';
 
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -47,29 +50,79 @@ const muiTheme = getMuiTheme({
   });
 
 
-
+const emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"; 
 class Signup extends React.Component{
 
+    constructor(props) {
+        super(props)
+        this.state = { errorEmailText: '',errorPasswordText:'',errorEmailText:'',errorLastText:''}
+    }
+
+    componentWillMount(){
+        this.props.logout();
+        persistStore(store).purge();
+    }    
+
+
     handleSubmit = (userdata) => {
-        
-        API.doSignup(userdata)
-            .then((response) => {
-                if (response.status === 202) {
-                    NotificationManager.error("Username exists", "Signup failed", 2500, true);
-                    this.props.history.push("/signup");
-                }
-                else if(response.status === 201){
-                    NotificationManager.success("Login Now", "Signup Successful", 2500, true);
-                    this.props.history.push("/login");
+
+        if(userdata.username.match(emailRegex)){
+            this.setState(...this.state,{errorEmailText:""});
+            if((userdata.password).toString().length > 4 ){
+                this.setState(...this.state,{errorPasswordText:""});
+                if((userdata.firstname).toString().length > 1 ){
+                    this.setState(...this.state,{errorFirstText:""});
+                    if((userdata.lastname).toString().length > 1 ){
+                        this.setState(...this.state,{errorLastText:""});
+                        API.doSignup(userdata)
+                        .then((response) => {
+                            if (response.status === 202) {
+                                NotificationManager.error("Username exists", "Signup failed", 2500, true);
+                                this.props.history.push("/signup");
+                            }
+                            else if(response.status === 201){
+                                NotificationManager.success("Login Now", "Signup Successful", 2500, true);
+                                this.props.history.push("/login");
+                            }
+                            else{
+                                console.log("Fail");
+                            }
+                        });
+
+                    }
+                    else{
+                        this.setState({...this.state,errorLastText:"Last Name length must be greater than 1"});
+                    }
                 }
                 else{
-                    console.log("Fail");
+                    this.setState({...this.state,errorFirstText:"First Name length must be greater than 1"});
                 }
-            });
+            }
+            else{
+                this.setState({...this.state,errorPasswordText:"Password length must be greater than 4"});
+            }
+        } 
+        else {
+            this.setState({...this.state, errorEmailText: 'Invalid email' })
+        }
     };
     handleLogin(){
         this.props.history.push('/login');
     }
+
+    onEmailChange = (event) => {
+        this.setState({...this.state, errorEmailText: '' });
+    }
+    onPasswordChange = (event) => {
+        this.setState({...this.state, errorPasswordText: '' });
+    }
+    onFirstChange = (event) => {
+        this.setState({...this.state, errorFirstText: '' });
+    }
+    onLastChange = (event) => {
+        this.setState({...this.state, errorLastText: '' });
+    }
+
 
     render(){
         return(
@@ -84,27 +137,34 @@ class Signup extends React.Component{
                     <Paper zDepth={5}>
                     <br/>
                     <TextField hintText="First name" style={styles.mLeft} underlineShow={false} name="firstname"
+                    floatingLabelText="Enter First Name" hintText="First Name" errorText={this.state.errorFirstText}
                     onChange={(event)=>
                     {event.persist();
                     this.props.changeValue(event);
-                    console.log(this.props);}} />
+                    this.onFirstChange(event);}} />
                     <br/>
                     <TextField hintText="Last name" style={styles.mLeft} underlineShow={false} name="lastname"
+                    floatingLabelText="Enter Last Name" hintText="Last Name" errorText={this.state.errorLastText}
                     onChange={(event)=>
                     {event.persist();
-                    this.props.changeValue(event)}}
+                    this.props.changeValue(event);
+                    this.onLastChange(event)}}
                      />
                     <br/>
                     <TextField hintText="Email address" style={styles.mLeft} underlineShow={false} name="username"
+                    floatingLabelText="Enter email or username" hintText="Email" errorText={this.state.errorEmailText}
                     onChange={(event)=>
                     {event.persist();
-                    this.props.changeValue(event)}}
+                    this.props.changeValue(event);
+                    this.onEmailChange(event)}}
                     />
                     <br/>
                     <TextField hintText="Password" style={styles.mLeft} underlineShow={false} name="password" type="password"
+                    floatingLabelText="Enter Password" hintText="Password" errorText={this.state.errorPasswordText}
                     onChange={(event)=>
                     {event.persist();
-                    this.props.changeValue(event)}}
+                    this.props.changeValue(event);
+                    this.onPasswordChange(event);}}
                     />
                     <br/>
                     <center>
@@ -132,6 +192,7 @@ function mapStateToProps(state){
 function matchDispatchToProps(dispatch){
     return bindActionCreators(
         {changeValue:changeValue,
+         logout:logout,
         }
         ,dispatch);
 }

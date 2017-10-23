@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
+import {persistStore, autoRehydrate} from 'redux-persist'
 
 import sha256 from 'crypto-js/sha256';
 import hmacSHA512 from 'crypto-js/hmac-sha512';
@@ -11,6 +12,8 @@ import CryptoJS from 'crypto-js'
 import {changeValue} from '../actions/loginActions.js';
 import {loginSuccess} from '../actions/loginActions.js';
 import * as API from '../api/API';
+import store from '../index';
+import {logout} from '../actions/logout';
 
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -55,9 +58,18 @@ const style2 = {
     },
   });
 
+const emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"; 
 class Login extends React.Component{
 
+    constructor(props) {
+        super(props)
+        this.state = { errorEmailText: ''}
+    }
+
     componentWillMount(){
+        this.props.logout();
+        persistStore(store).purge(); 
+    
         API.doSessionCheck(this.props.activeUserData.loginData)
         .then((res) => {
             if (res.status === 201) {
@@ -67,30 +79,48 @@ class Login extends React.Component{
     }    
 
     handleSubmit = (userdata) => {
-        API.doLogin(userdata)
-        .then((res) => {
-            if (res.status === 201) {
-                console.log("Success");
-                res.json().then(user => {
-                    console.log(user.loginData.username);
-                    this.props.loginSuccess(user);
-                    NotificationManager.success("Welcome", "Login Successful", 2500, true);
-                    this.props.history.push("/home");
-                });
         
-            } else if (res.status === 401) {
-                console.log("Fail");
-                NotificationManager.error("Invalid username and password", "Login Failed", 2500, true);
-                this.props.history.push("/");
+        if(userdata.username.match(emailRegex)){
+            if((userdata.password).toString().length > 0 ){
+                this.setState({ errorEmailText: '',errorPasswordText: '' });
+                API.doLogin(userdata)
+                .then((res) => {
+                    if (res.status === 201) {
+                        console.log("Success");
+                        res.json().then(user => {
+                            console.log(user.loginData.username);
+                            this.props.loginSuccess(user);
+                            NotificationManager.success("Welcome", "Login Successful", 2500, true);
+                            this.props.history.push("/home");
+                        });
+                
+                    } else if (res.status === 401) {
+                        console.log("Fail");
+                        NotificationManager.error("Invalid username and password", "Login Failed", 2500, true);
+                        this.props.history.push("/");
+                    } 
+                });
+            }
+            else{
+                this.setState(...this.state,{ errorPasswordText: 'Please enter a password' })
             }
             
-        });
+        } else {
+            this.setState(...this.state,{ errorEmailText: 'Invalid email' })
+        }
     };
+
+    onEmailChange = (event) => {
+        this.setState({ errorEmailText: '' });
+    }
+    onPasswordChange = (event) => {
+        this.setState({...this.state, errorPasswordText: '' });
+    }
 
     handleSignup(){
         this.props.history.push('/signup');
     }
-   
+    
     render(){
         
             return(
@@ -104,16 +134,21 @@ class Login extends React.Component{
                                     iconElementRight={<FlatButton label="Sign up" onClick={()=>this.handleSignup()}/>}/>
                                 <Paper zDepth={5}>
                                 <br/>
-                                <TextField hintText="Email address" style={style} underlineShow={false} name="username"
+                                
+                                <TextField hintText="Email address" style={style} underlineShow={false} name="username" fullWidth= {true}
+                                type="email" floatingLabelText="Enter email or username" hintText="Email" errorText={this.state.errorEmailText}
                                 onChange={(event)=>
                                 {event.persist();
-                                this.props.changeValue(event)}}
+                                this.props.changeValue(event);
+                                this.onEmailChange(event)}}
                                 />
                                 <br/>
-                                <TextField hintText="Password" style={style} type="password" underlineShow={false} name="password"
+                                <TextField hintText="Password" style={style} type="password" underlineShow={false} name="password" fullWidth={true}
+                                required="true" floatingLabelText="Enter password" hintText="Password" errorText={this.state.errorPasswordText}
                                 onChange={(event)=>
                                 {event.persist();
-                                this.props.changeValue(event)}}
+                                this.props.changeValue(event);
+                                this.onPasswordChange(event);}}
                                 />
                                 <br/>
                                 <center>
@@ -143,8 +178,10 @@ function mapStateToProps(state){
 function matchDispatchToProps(dispatch){
     return bindActionCreators(
         {
-            changeValue:changeValue,
-            loginSuccess:loginSuccess,
+            changeValue,
+            loginSuccess,
+            logout,
+
         }
         ,dispatch);
 }
