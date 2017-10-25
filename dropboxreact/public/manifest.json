@@ -1,11 +1,11 @@
 {
-  "short_name": "React App",
+  "short_name": "DropBox",
   "name": "Create React App Sample",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "dropbox.svg",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/svg"
     }
   ],
   "start_url": "./index.html",

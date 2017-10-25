@@ -4,6 +4,7 @@ var passport = require('passport');
 require('./passport')(passport);
 
 router.post('/', (req,res,next)=>{
+    //console.log("reqest: " +req.body.username);
     passport.authenticate('login', function(err, user) {
         if(err) {
             res.status(500).send();
@@ -17,7 +18,7 @@ router.post('/', (req,res,next)=>{
             req.session.cookie.maxAge = 30 * 60 * 1000;
 
             console.log("session initilized");
-            return res.status(201).send(user);
+            return res.status(201).send(JSON.stringify(user));
         }
     })(req, res);
 });

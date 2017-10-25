@@ -8,7 +8,6 @@ var cors = require('cors');
 require('./routes/passport')(passport);
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
 var mongoSessionURL = "mongodb://localhost:27017/sessions";
 var expressSessions = require("express-session");
 var mongoStore = require("connect-mongo/es5")(expressSessions);
@@ -52,7 +51,6 @@ app.use(expressSessions({
 app.use(passport.initialize());
 
 app.use('/', routes);
-app.use('/users', users);
 
 app.use('/login', login);
 app.use('/signup',signup);
