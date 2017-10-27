@@ -72,3 +72,40 @@ fetch(`${api}/logout`, {
         console.log("This is error");
         return error;
 });
+
+export const getFiles = (payload) =>
+fetch(`${api}/getFiles`, {
+    method: 'POST',
+    headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+    },
+    body:JSON.stringify(payload)
+}).then(res => {
+    return res;
+}).catch(error => {
+        console.log("This is error");
+        return error;
+});
+
+export const fileUpload = (payload) =>
+fetch(`${api}/uploadFile`, {
+    method: 'POST',
+    body: payload
+}).then(res => {
+    return res;
+}).catch(error => {
+        console.log("This is error");
+        return error;
+});
+
+export const fileDownload = (fileid) =>
+fetch(`${api}/downloadFile`, {
+    method: 'POST',
+    body: JSON.stringify({fileid})
+}).then(res => {
+    return res;
+}).catch(error => {
+        console.log("This is error");
+        return error;
+});

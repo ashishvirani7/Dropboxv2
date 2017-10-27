@@ -1,7 +1,7 @@
 var express = require('express');
 var autoIncrement = require("mongodb-autoincrement");
 var router = express.Router();
-
+var mkdirp = require('mkdirp');
 var mongo = require("./mongo");
 var mongoURL = "mongodb://localhost:27017/dropbox";
 
@@ -66,17 +66,23 @@ try {
             autoIncrement.getNextSequence(db, loginCollectionName, function (err, autoIndex) {
                 
                 loginCollection.insert({
-                    _id: autoIndex,
+                    userid: autoIndex+'',
                     username:username,
                     password:password,
                 });
                 personalCollection.insert({
-                    _id: autoIndex,
+                    userid: autoIndex+'',
                     firstname,
                     lastname,
                 });
+                var dir = './UserFiles/'+autoIndex; 
+                mkdirp('./UserFiles/', function(err){
+                    mkdirp(dir, function (err) {
+                        if (err) console.error(err)
+                        else console.log('Cretaed!')
+                    });
+                });
             });
-        
             return res.status(201).send({"message":"Signup Successful"});
         }
     });

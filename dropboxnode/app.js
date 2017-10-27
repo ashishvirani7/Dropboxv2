@@ -16,6 +16,9 @@ var signup = require('./routes/signup');
 var login = require('./routes/login');
 var sessioncheck = require('./routes/sessioncheck');
 var logout = require('./routes/logout');
+var getFiles = require('./routes/getFiles');
+var uploadFile = require('./routes/uploadFile');
+var downloadFile = require('./routes/downloadFile');
 
 var app = express();
 
@@ -56,4 +59,8 @@ app.use('/login', login);
 app.use('/signup',signup);
 app.use('/sessioncheck',sessioncheck);
 app.use('/logout', logout);
+app.use('/getFiles',getFiles);
+app.use('/uploadFile',uploadFile);
+app.use('/downloadFile',downloadFile);
+
 module.exports = app;

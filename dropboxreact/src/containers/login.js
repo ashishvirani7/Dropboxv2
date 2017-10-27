@@ -9,11 +9,12 @@ import hmacSHA512 from 'crypto-js/hmac-sha512';
 import Base64 from 'crypto-js/enc-base64';
 import CryptoJS from 'crypto-js'
 
-import {changeValue} from '../actions/loginActions.js';
-import {loginSuccess} from '../actions/loginActions.js';
+import {changeValue} from '../actions/loginAction.js';
+import {loginSuccess} from '../actions/loginAction.js';
+import {setPath} from '../actions/pathAction.js';
 import * as API from '../api/API';
 import store from '../index';
-import {logout} from '../actions/logout';
+import {logout} from '../actions/logoutAction';
 
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -87,8 +88,8 @@ class Login extends React.Component{
                     if (res.status === 201) {
                         console.log("Success");
                         res.json().then(user => {
-                            console.log(user.loginData.username);
                             this.props.loginSuccess(user);
+                            this.props.setPath(user.loginData.userid+"/");
                             NotificationManager.success("Welcome", "Login Successful", 2500, true);
                             this.props.history.push("/home");
                         });
@@ -180,6 +181,7 @@ function matchDispatchToProps(dispatch){
             changeValue,
             loginSuccess,
             logout,
+            setPath,
 
         }
         ,dispatch);

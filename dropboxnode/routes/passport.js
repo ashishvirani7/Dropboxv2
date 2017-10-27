@@ -17,10 +17,10 @@ module.exports = function(passport) {
 
                 loginCollection.findOne({"username":username,"password": password}, function(err, loginData){
                     if (loginData) {
-                        console.log("user id is: "+loginData._id);
-                        userid=loginData._id;
+                        console.log("user id is: "+loginData.userid);
+                        userid=loginData.userid;
                         
-                        personalCollection.findOne({"_id":userid}, function(err, personalData){
+                        personalCollection.findOne({"userid":userid}, function(err, personalData){
                             if (personalData) {
                                 response={
                                     loginData,
@@ -28,11 +28,11 @@ module.exports = function(passport) {
                                 };
                                 done(null, response);
                             }
-                        //mongo.releaseConnection(connectionNumber,db);
+                        mongo.releaseConnection(connectionNumber,db);
                         });
                     } 
                     else {
-                        //mongo.releaseConnection(connectionNumber,db);
+                        mongo.releaseConnection(connectionNumber,db);
                         done(null, false);
                     }
                     mongo.releaseConnection(connectionNumber);

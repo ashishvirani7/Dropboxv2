@@ -4,10 +4,10 @@ import {connect} from 'react-redux';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import {persistStore, autoRehydrate} from 'redux-persist'
 
-import {changeValue} from '../actions/signupActions';
 import * as API from '../api/API';
 import store from '../index';
-import {logout} from '../actions/logout';
+import {logout} from '../actions/logoutAction';
+import {changeValue} from '../actions/signupAction';
 
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -82,6 +82,7 @@ class Signup extends React.Component{
                             }
                             else if(response.status === 201){
                                 NotificationManager.success("Login Now", "Signup Successful", 2500, true);
+
                                 this.props.history.push("/login");
                             }
                             else{

@@ -6,7 +6,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { BrowserRouter, Route } from 'react-router-dom';
 
-import {logout} from '../actions/logout';
+import {logout} from '../actions/logoutAction';
 import styles from './style.css';
 import store from '../index';
 import * as API from '../api/API';
