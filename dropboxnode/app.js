@@ -19,6 +19,10 @@ var logout = require('./routes/logout');
 var getFiles = require('./routes/getFiles');
 var uploadFile = require('./routes/uploadFile');
 var downloadFile = require('./routes/downloadFile');
+var createFolder = require('./routes/createFolder');
+var getFolders = require('./routes/getFolders');
+var deleteFile = require('./routes/deleteFile');
+var deleteFolder = require('./routes/deleteFolder');
 
 var app = express();
 
@@ -62,5 +66,9 @@ app.use('/logout', logout);
 app.use('/getFiles',getFiles);
 app.use('/uploadFile',uploadFile);
 app.use('/downloadFile',downloadFile);
+app.use('/createFolder',createFolder);
+app.use('/getFolders',getFolders);
+app.use('/deleteFile',deleteFile);
+app.use('/deleteFolder',deleteFolder);
 
 module.exports = app;

@@ -42,19 +42,26 @@ router.post('/', upload.single('myfile'), function (req, res, next) {
             mongo.connect(mongoURL, function(db){
                 const filesCollectionName = 'files'; 
                 const filesCollection = db.collection(filesCollectionName);
-                
-                autoIncrement.getNextSequence(db, filesCollectionName, function (err, autoIndex) {
-                    console.log("file: "+JSON.stringify(filedata));
-                    filesCollection.insert(
-                        {
-                            fileid:autoIndex,
-                            ownerid:filedata.ownerid,
-                            name:filedata.filename,
-                            path:filedata.path,
-                            size:filedata.filesize
-                        }
-                    );
+                filesCollection.findOne({name:filedata.filename,path:filedata.path},(err,file) =>{
+                    if(file){
+
+                    }
+                    else{
+                        autoIncrement.getNextSequence(db, filesCollectionName, function (err, autoIndex) {
+                            console.log("file: "+JSON.stringify(filedata));
+                            filesCollection.insert(
+                                {
+                                    fileid:autoIndex,
+                                    ownerid:filedata.ownerid,
+                                    name:filedata.filename,
+                                    path:filedata.path,
+                                    size:filedata.filesize
+                                }
+                            );
+                        });
+                    }
                 });
+                   
             });
         }
         catch(e){

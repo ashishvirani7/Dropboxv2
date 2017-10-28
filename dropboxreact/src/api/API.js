@@ -102,6 +102,10 @@ fetch(`${api}/uploadFile`, {
 export const fileDownload = (fileid) =>
 fetch(`${api}/downloadFile`, {
     method: 'POST',
+    headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+    },
     body: JSON.stringify({fileid})
 }).then(res => {
     return res;
@@ -109,3 +113,64 @@ fetch(`${api}/downloadFile`, {
         console.log("This is error");
         return error;
 });
+
+export const createFolder = (payload) =>
+fetch(`${api}/createFolder`, {
+    method: 'POST',
+    headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+}).then(res => {
+    return res;
+}).catch(error => {
+        console.log("This is error");
+        return error;
+});
+
+export const getFolders = (payload) =>
+fetch(`${api}/getFolders`, {
+    method: 'POST',
+    headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+    },
+    body:JSON.stringify(payload)
+}).then(res => {
+    return res;
+}).catch(error => {
+        console.log("This is error");
+        return error;
+});
+
+export const deleteFile = (fileid) =>
+fetch(`${api}/deleteFile`, {
+    method: 'POST',
+    headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+    },
+    body:JSON.stringify({fileid})
+}).then(res => {
+    return res;
+}).catch(error => {
+        console.log("This is error");
+        return error;
+});
+
+export const deleteFolder = (folderid) =>
+fetch(`${api}/deleteFolder`, {
+    method: 'POST',
+    headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+    },
+    body:JSON.stringify({folderid})
+}).then(res => {
+    return res;
+}).catch(error => {
+        console.log("This is error");
+        return error;
+});
+

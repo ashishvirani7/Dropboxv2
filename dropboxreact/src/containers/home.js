@@ -7,6 +7,7 @@ import {connect} from 'react-redux';
 import { BrowserRouter, Route } from 'react-router-dom';
 
 import {logout} from '../actions/logoutAction';
+import {createFolder} from '../actions/createFolderAction';
 import styles from './style.css';
 import store from '../index';
 import * as API from '../api/API';
@@ -26,6 +27,9 @@ import ContentDrafts from 'material-ui/svg-icons/content/drafts';
 import Divider from 'material-ui/Divider';
 import ActionInfo from 'material-ui/svg-icons/action/info';
 import ActionAccountCircle from 'material-ui/svg-icons/action/account-circle';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import RaisedButton from 'material-ui/RaisedButton';
 import {
   blue500,
   indigo900,
@@ -34,6 +38,8 @@ import {
   pink400,
   purple500,
   green700,
+  fullWhite,
+
 } from 'material-ui/styles/colors';
 
 const style1 = {
@@ -117,8 +123,7 @@ class Home extends React.Component{
               </div>
               <div className="col-md-3" style={divStyle}>
                 <div className="row">
-          
-                  <div className="col-md-8">
+                  <div className="col-md-3">
                   <MuiThemeProvider>
                       <div>
                         <IconButton iconStyle={styles.iconStyles.mediumIcon}
@@ -132,20 +137,35 @@ class Home extends React.Component{
                     </MuiThemeProvider>
                   </div>
                 
-                <div className="col-md-2">
-                  <MuiThemeProvider>
-                      <div>
-                        <IconButton iconStyle={styles.iconStyles.mediumIcon}
-                          style={styles.iconStyles.medium} tooltip="Sign Out"
-                            onClick={()=> this.handleLogout()}>
-                          <LogoutAvtar />
-                        </IconButton>
-                        <h6 style={{marginLeft:"17px"}} onClick={()=> this.handleLogout()}> Sign Out </h6>
+                  <div className="col-md-3">
+                    <MuiThemeProvider>
+                        <div>
+                          <div className="row">
+                            <IconButton iconStyle={styles.iconStyles.mediumIcon}
+                              style={styles.iconStyles.medium} tooltip="Sign Out"
+                                onClick={()=> this.handleLogout()}>
+                              <LogoutAvtar />
+                            </IconButton>
+                            <h6 style={{marginLeft:"17px"}} onClick={()=> this.handleLogout()}> Sign Out </h6>
+                          </div>
+                          
+                        </div>
+                        
+                      </MuiThemeProvider>
+                  </div>
+                </div>
+                <div className="row">
+                  
+                    <MuiThemeProvider>
+                      <div className="col-md-offset-1">
+                        
+                          <RaisedButton label="Create Folder"  backgroundColor={blue500} style={{marginTop:"10px"}}
+                              onClick={()=> this.props.createFolder()}  
+                          />
                       </div>
-                      
                     </MuiThemeProvider>
-                  </div>
-                  </div>
+                  
+                </div>
               </div>
           </div>
         );
@@ -155,6 +175,7 @@ class Home extends React.Component{
 function mapStateToProps(state){
     return{
         activeUserData:state.activeUserData,
+        path:state.path,
     };
 }
 
@@ -162,6 +183,8 @@ function matchDispatchToProps(dispatch){
     return bindActionCreators(
         {
             logout:logout,
+            createFolder,
+
         }
         ,dispatch);
   }

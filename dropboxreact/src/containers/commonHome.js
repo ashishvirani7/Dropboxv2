@@ -3,14 +3,17 @@ import {persistStore, autoRehydrate} from 'redux-persist'
 import PropTypes from 'prop-types';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import Dropzone from 'react-dropzone';
+import fileDownload from 'js-file-download';
 
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {logout} from '../actions/logoutAction';
 import {getFiles} from '../actions/getFilesAction';
+import {getFolders} from '../actions/getFoldersAction';
 import styles from './style.css';
 import store from '../index';
 import * as API from '../api/API';
+import CreateFolder from './createFolder';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import IconButton from 'material-ui/IconButton';
@@ -18,6 +21,7 @@ import LogoutAvtar from 'material-ui/svg-icons/action/exit-to-app';
 import List from 'material-ui/List/List';
 import ListItem from 'material-ui/List/ListItem';
 import DriveFile from 'material-ui/svg-icons/editor/insert-drive-file';
+import DriveFolder from 'material-ui/svg-icons/file/folder-open';
 import Avatar from 'material-ui/Avatar';
 import RaisedButton from 'material-ui/RaisedButton';
 import {
@@ -31,11 +35,12 @@ import {
   yellow50,
 
 } from 'material-ui/styles/colors';
+var requestData;
+
 
 class CommonHome extends React.Component{
 
     getFilesCall(){
-        var requestData={path:this.props.path,userid:this.props.activeUserData.loginData.userid};
         API.getFiles(requestData)
         .then((res) => {
             if (res.status === 201) {
@@ -47,18 +52,35 @@ class CommonHome extends React.Component{
             } else if (res.status === 401) {
                 console.log("Fail");
             }
-            
-        });
+        });    
+    }
+
+    getFoldersCall(){
+        API.getFolders(requestData)
+        .then((res) => {
+            if (res.status === 201) {
+                res.json().then(data => {
+                    //console.log("got this: "+data);
+                    this.props.getFolders(data);
+                });
+                
+            } else if (res.status === 401) {
+                console.log("Fail");
+            }
+        });    
     }
 
     componentWillMount(){
+        requestData={path:this.props.path,userid:this.props.activeUserData.loginData.userid};
         API.doSessionCheck(this.props.activeUserData.loginData)
         .then((res) => {
             if (res.status === 202) {
                     this.props.history.push("/login");
                 }
         });
+        
         this.getFilesCall();
+        this.getFoldersCall();
     }    
 
     handleLogout(){
@@ -95,41 +117,99 @@ class CommonHome extends React.Component{
         });
     }
 
-    onFileClick = (fileid) => {
+    onFileClick = (fileid,name) => {
         console.log("file id : "+fileid);
-        API.fileDownload()
+        API.fileDownload(fileid)
         .then(res =>{
+            console.log(res);
+            fileDownload(res.data, name);
+        });
 
+    };
+
+    deleteFile = (fileid) => {
+        API.deleteFile(fileid)
+        .then(res =>{
+            if(res.status===201){
+                this.getFilesCall();
+            }
         });
     };
 
+    deleteFolder = (folderid) => {
+        API.deleteFolder(folderid)
+        .then(res =>{
+            if(res.status===201){
+                this.getFoldersCall();
+            }
+        });
+    };
+
+
     createFileList() {
-        
+       
+        console.log("files: "+Object.keys(this.props.files).length)
         return this.props.files.map((file) => {
             console.log("ITEM:"+file.name);
             return(
-                <ListItem
-                    key = {file.fileid}
-                    disabled={false}
-                    size={50}
-                    onClick={()=>this.onFileClick(file.fileid)}
-                    leftAvatar={
-                    <Avatar
-                        icon={<DriveFile />}
-                        color={yellow50}
-                        backgroundColor={blue500}
-                        size={40}
-                        style={{marginLeft: 10}}
-                        
-                    />
-                    }><p style={{marginLeft:10}}>
-                        {file.name}</p>
-                        <RaisedButton label="Delete" primary={true}
+                <div>
+                    <ListItem
+                        key = {file.fileid}
+                        disabled={false}
+                        size={50}
+                        onClick={()=>this.onFileClick(file.fileid,file.name)}
+                        leftAvatar={
+                        <Avatar
+                            icon={<DriveFile />}
+                            color={yellow50}
+                            backgroundColor={blue500}
+                            size={40}
+                            style={{marginLeft: 10}}
+                            
                         />
-                </ListItem>
+                        }><p style={{marginLeft:10}}>
+                            {file.name}</p>
+                            
+                    </ListItem>
+                    <RaisedButton label="Delete" primary={true} style={styles.mLeft}
+                        onClick={()=>this.deleteFile(file.fileid)}
+                    />
+                </div>
             );   
         });
         
+    }
+
+    createFolderList() {
+    
+        //console.log("files: "+Object.keys(this.props.files).length)
+        return this.props.folders.map((folder) => {
+            return(
+                <div>
+                    <ListItem
+                        key = {folder.folderid}
+                        disabled={false}
+                        size={50}
+                        //onClick={()=>this.onFileClick(file.fileid,file.name)}
+                        leftAvatar={
+                        <Avatar
+                            icon={<DriveFolder />}
+                            color={yellow50}
+                            backgroundColor={blue500}
+                            size={40}
+                            style={{marginLeft: 10}}
+                            
+                        />
+                        }><p style={{marginLeft:10}}>
+                            {folder.name}</p>
+                    </ListItem>
+                    <RaisedButton label="Delete" primary={true} style={styles.mLeft}
+                        onClick={()=>this.deleteFolder(folder.folderid)}
+                    />
+                </div>
+            );   
+        });
+    
     }
 
     render(){
@@ -143,32 +223,30 @@ class CommonHome extends React.Component{
             height:"100vh",
             color: '#fff'}
 
-            if(!this.props.files)
-                return(<div></div>);
-            else{
-                return(
-                    
-                    <div className="row">
-                        <div className="row" style={styles.accountMargin}>
-                            <h1>Home</h1>
-                        </div>
-                        <Dropzone 
-                            onDrop={this.onDrop.bind(this)} 
-                            style={overlayStyle}
-                            disableClick
-                            >
-                            <MuiThemeProvider>
-                                <ListItem> 
-                                    {this.createFileList()}
-                                </ListItem>
-                            
-                            </MuiThemeProvider>
-                        
-                        </Dropzone>
+            return(
+                
+                <div className="row">
+                    <div className="row" style={styles.accountMargin}>
+                        <h1>Home</h1>
                     </div>
+                    <Dropzone 
+                        onDrop={this.onDrop.bind(this)} 
+                        style={overlayStyle}
+                        disableClick
+                        > 
+                        {this.props.createFolder.create && <CreateFolder/>}
+                        <MuiThemeProvider>
+                            <ListItem>
+                                {this.createFolderList()}
+                                {this.createFileList()}
+                            </ListItem>
+                        </MuiThemeProvider>
                     
-                );
-            }
+                    </Dropzone>
+                </div>
+                
+            );
+            
     }
 }
 
@@ -177,6 +255,9 @@ function mapStateToProps(state){
         activeUserData:state.activeUserData,
         path:state.path,
         files:state.files,
+        createFolder:state.createFolder,
+        folders:state.folders,
+
     };
 }
 
@@ -184,7 +265,9 @@ function matchDispatchToProps(dispatch){
     return bindActionCreators(
         {
             logout,
-            getFiles
+            getFiles,
+            getFolders,
+
         }
         ,dispatch);
   }

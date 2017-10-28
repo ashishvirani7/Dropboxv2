@@ -1,26 +1,28 @@
 var express = require('express');
 var router = express.Router();
 var mongo = require("./mongo");
+var path = require('path');
 
 router.post('/', function (req, res, next) {
-    path = req.body.path;
-    userid= req.body.userid;
-    console.log("userid is :"+userid + " path is :"+path);
+    var fileid= parseInt(req.body.fileid);
+    console.log("fileid is :"+fileid);
     mongo.getConnection((connectionNumber,db)=>{
-        console.log("no.: "+connectionNumber);
         const filesCollectionName = 'files'; 
         const filesCollection = db.collection(filesCollectionName);
         
-        var response={};
-
-        filesCollection.find({"ownerid":userid,"path": path}, function(err, fileData){
+        filesCollection.findOne({"fileid":fileid}, function(err, file){
             if(err) throw err;
             else{
-                res.status(201).send(fileData);
+                console.log("Path I found is :"+file.path);
+                var finalPath = "UserFiles/"+file.path+file.name;
+                console.log(finalPath);
+                
+                res.download(finalPath);
             }
             mongo.releaseConnection(connectionNumber);
         });
     });
-
 });
+
+
 module.exports = router;
