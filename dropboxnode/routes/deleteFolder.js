@@ -6,6 +6,7 @@ var rimraf = require('rimraf');
 
 router.post('/', function (req, res, next) {
     var folderid= parseInt(req.body.folderid);
+    var ownerid= parseInt(req.body.userid);
     console.log("folderid is :"+folderid);
     var path,foldername,finalpath;
     mongo.getConnection((connectionNumber,db)=>{
@@ -17,7 +18,7 @@ router.post('/', function (req, res, next) {
             else{
                 path=folderData.path;
                 name=folderData.name;
-                finalpath = "./UserFiles/"+path+name;
+                finalpath = "./UserFiles/"+ownerid+path+name;
                 console.log("final path:   "+finalpath);
                 foldersCollection.remove({"folderid":folderid}, function(err){
                     if(err) throw err;

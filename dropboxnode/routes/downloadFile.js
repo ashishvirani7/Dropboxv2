@@ -14,7 +14,7 @@ router.post('/', function (req, res, next) {
             if(err) throw err;
             else{
                 console.log("Path I found is :"+file.path);
-                var finalPath = "UserFiles/"+file.path+file.name;
+                var finalPath = "./UserFiles/"+ownerid+file.path+file.name;
                 console.log(finalPath);
                 
                 res.download(finalPath);

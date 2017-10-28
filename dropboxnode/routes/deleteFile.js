@@ -6,8 +6,9 @@ var fs = require('fs');
 
 router.post('/', function (req, res, next) {
     var fileid= parseInt(req.body.fileid);
+    var ownerid= parseInt(req.body.userid);
     var path,filename,finalpath;
-    console.log("fileid is :"+fileid);
+    console.log("fileid is :"+req.body.fileid);
     mongo.getConnection((connectionNumber,db)=>{
         const filesCollectionName = 'files'; 
         const filesCollection = db.collection(filesCollectionName);
@@ -17,7 +18,7 @@ router.post('/', function (req, res, next) {
             else{
                 path=fileData.path;
                 name=fileData.name;
-                finalpath = "./UserFiles/"+path+name;
+                finalpath = "./UserFiles/" +ownerid+path+name;
                 filesCollection.remove({"fileid":fileid}, function(err){
                     if(err) throw err;
                     else{

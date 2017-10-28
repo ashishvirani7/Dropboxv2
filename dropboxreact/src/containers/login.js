@@ -89,7 +89,7 @@ class Login extends React.Component{
                         console.log("Success");
                         res.json().then(user => {
                             this.props.loginSuccess(user);
-                            this.props.setPath(user.loginData.userid+"/");
+                            this.props.setPath("/");
                             NotificationManager.success("Welcome", "Login Successful", 2500, true);
                             this.props.history.push("/home");
                         });

@@ -127,8 +127,13 @@ class CommonHome extends React.Component{
 
     };
 
-    deleteFile = (fileid) => {
-        API.deleteFile(fileid)
+    onFolderClick = (folderid,name) => {
+        console.log("folder id : "+folderid);
+        this.props.history.push();
+    };
+
+    deleteFile = (fileid,userid) => {
+        API.deleteFile({fileid,userid})
         .then(res =>{
             if(res.status===201){
                 this.getFilesCall();
@@ -136,8 +141,8 @@ class CommonHome extends React.Component{
         });
     };
 
-    deleteFolder = (folderid) => {
-        API.deleteFolder(folderid)
+    deleteFolder = (folderid,userid) => {
+        API.deleteFolder({folderid,userid})
         .then(res =>{
             if(res.status===201){
                 this.getFoldersCall();
@@ -172,7 +177,7 @@ class CommonHome extends React.Component{
                             
                     </ListItem>
                     <RaisedButton label="Delete" primary={true} style={styles.mLeft}
-                        onClick={()=>this.deleteFile(file.fileid)}
+                        onClick={()=>this.deleteFile(file.fileid,this.props.activeUserData.loginData.userid)}
                     />
                 </div>
             );   
@@ -204,7 +209,7 @@ class CommonHome extends React.Component{
                             {folder.name}</p>
                     </ListItem>
                     <RaisedButton label="Delete" primary={true} style={styles.mLeft}
-                        onClick={()=>this.deleteFolder(folder.folderid)}
+                        onClick={()=>this.deleteFolder(folder.folderid,this.props.activeUserData.loginData.userid)}
                     />
                 </div>
             );   
@@ -267,7 +272,6 @@ function matchDispatchToProps(dispatch){
             logout,
             getFiles,
             getFolders,
-
         }
         ,dispatch);
   }

@@ -5,6 +5,7 @@ var mongo = require("./mongo");
 router.post('/', function (req, res, next) {
     path = req.body.path;
     userid= req.body.userid;
+    
     console.log("userid is :"+userid + " path is :"+path);
     mongo.getConnection((connectionNumber,db)=>{
         console.log("no.: "+connectionNumber);

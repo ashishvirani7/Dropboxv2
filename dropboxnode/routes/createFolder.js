@@ -27,7 +27,7 @@ router.post('/', function (req, res, next) {
                     }
                 );
             });
-            var dir = './UserFiles/'+path+foldername+'/'; 
+            var dir = './UserFiles/'+ownerid+path+foldername+'/'; 
             mkdirp(dir, function(err){
                 if (err) console.error(err)
                 else console.log('Cretaed!')
@@ -38,22 +38,6 @@ router.post('/', function (req, res, next) {
     catch(e){
         console.log(e);
     }
-
-    mongo.getConnection((connectionNumber,db)=>{
-        
-        
-        filesCollection.findOne({"fileid":fileid}, function(err, file){
-            if(err) throw err;
-            else{
-                console.log("Path I found is :"+file.path);
-                var finalPath = "UserFiles/"+file.path+file.name;
-                console.log(finalPath);
-                
-                res.download(finalPath);
-            }
-            mongo.releaseConnection(connectionNumber);
-        });
-    });
 });
 
 

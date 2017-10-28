@@ -144,14 +144,14 @@ fetch(`${api}/getFolders`, {
         return error;
 });
 
-export const deleteFile = (fileid) =>
+export const deleteFile = (payload) =>
 fetch(`${api}/deleteFile`, {
     method: 'POST',
     headers: {
         ...headers,
         'Content-Type': 'application/json'
     },
-    body:JSON.stringify({fileid})
+    body:JSON.stringify(payload)
 }).then(res => {
     return res;
 }).catch(error => {
@@ -159,14 +159,14 @@ fetch(`${api}/deleteFile`, {
         return error;
 });
 
-export const deleteFolder = (folderid) =>
+export const deleteFolder = (payload) =>
 fetch(`${api}/deleteFolder`, {
     method: 'POST',
     headers: {
         ...headers,
         'Content-Type': 'application/json'
     },
-    body:JSON.stringify({folderid})
+    body:JSON.stringify(payload)
 }).then(res => {
     return res;
 }).catch(error => {
