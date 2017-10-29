@@ -6,6 +6,7 @@ class Account extends React.Component{
         return(
             <div className="row" style={styles.accountMargin}>
                 <h1>Account</h1>
+                <hr style={{borderWidth:"2px" ,borderStyle:"inset"}}/>
             </div>
         );
     }

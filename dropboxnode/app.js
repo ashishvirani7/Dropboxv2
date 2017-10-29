@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var cors = require('cors');
 require('./routes/passport')(passport);
+const fileUpload = require('express-fileupload');
 
 var routes = require('./routes/index');
 var mongoSessionURL = "mongodb://localhost:27017/sessions";
@@ -29,6 +30,7 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.use(fileUpload());
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

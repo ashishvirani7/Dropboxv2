@@ -1,28 +1,31 @@
 var express = require('express');
 var router = express.Router();
 var mongo = require("./mongo");
+var kafka = require('./kafka/client');
+
+var topic_name = "get_files_topic";
 
 router.post('/', function (req, res, next) {
     path = req.body.path;
-    userid= req.body.userid;
-    
-    console.log("userid is :"+userid + " path is :"+path);
-    mongo.getConnection((connectionNumber,db)=>{
-        console.log("no.: "+connectionNumber);
-        const filesCollectionName = 'files'; 
-        const filesCollection = db.collection(filesCollectionName);
-        
-        var response={};
+    ownerid= req.body.userid;
 
-        filesCollection.find({"ownerid":userid,"path": path}, function(err, fileData){
-            if(err) throw err;
-            else{
-                console.log(JSON.stringify(fileData));
-                res.status(201).send(fileData);
+    kafka.make_request(topic_name,{path,ownerid}, function(err,results){
+        console.log('in result');
+        console.log(results);
+        if(err){
+            done(err,{});
+        }
+        else
+        {
+            if(results.code == 201){
+                console.log("Files getting successfully");
+                res.status(201).send(results.data);
             }
-            mongo.releaseConnection(connectionNumber);
-        });
+            else {
+                res.status(202).send({"message":"Files getting failed"});
+                console.log("Files getting Failed");
+            }
+        }
     });
-
 });
 module.exports = router;

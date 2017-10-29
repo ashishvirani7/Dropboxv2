@@ -162,7 +162,7 @@ class Home extends React.Component{
                     <MuiThemeProvider>
                       <div className="col-md-offset-1">
                         
-                          <RaisedButton label="Create Folder"  backgroundColor={blue300} style={{marginTop:"40px"}}
+                          <RaisedButton label="Create Folder"  backgroundColor="#2d72d8" style={{marginTop:"40px"}}
                               onClick={()=> this.props.createFolder()}  
                           />
                       </div>

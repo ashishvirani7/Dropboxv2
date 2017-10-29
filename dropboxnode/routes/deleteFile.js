@@ -3,39 +3,36 @@ var router = express.Router();
 var mongo = require("./mongo");
 var path = require('path');
 var fs = require('fs');
+var kafka = require('./kafka/client');
+
+var topic_name = "delete_file_topic";
 
 router.post('/', function (req, res, next) {
+    
     var fileid= parseInt(req.body.fileid);
     var ownerid= parseInt(req.body.userid);
-    var path,filename,finalpath;
-    console.log("fileid is :"+req.body.fileid);
-    mongo.getConnection((connectionNumber,db)=>{
-        const filesCollectionName = 'files'; 
-        const filesCollection = db.collection(filesCollectionName);
 
-        filesCollection.findOne({"fileid":fileid}, function(err, fileData){
-            if(err) throw err;
-            else{
-                path=fileData.path;
-                name=fileData.name;
-                finalpath = "./UserFiles/" +ownerid+path+name;
-                filesCollection.remove({"fileid":fileid}, function(err){
-                    if(err) throw err;
-                    else{
-                        fs.unlink(finalpath, function(error) {
-                            if (error) {
-                                throw error;
-                            }
-                            console.log('file deleted');
-                         });  
-                    }
-                    mongo.releaseConnection(connectionNumber);
-                });
+    kafka.make_request(topic_name,{fileid,ownerid}, function(err,results){
+        console.log('in result');
+        console.log(results);
+        if(err){
+            done(err,{});
+        }
+        else
+        {
+            if(results.code == 201){
+                console.log("File deleted successfully");
+                return res.status(201).send({"message":"File deleted"});
             }
-        }); 
+            else {
+                res.status(202).send({"message":"File letion failed"});
+                console.log("File deletion Failed");
+            }
+        }
     });
-    res.status(201).end();
 });
 
-
 module.exports = router;
+
+
+    

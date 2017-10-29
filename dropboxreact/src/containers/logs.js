@@ -5,7 +5,8 @@ class Logs extends React.Component{
     render(){
         return(
             <div className="row" style={styles.accountMargin}>
-                <h1>Recent</h1>
+                <h1>Home</h1>
+                <hr style={{borderWidth:"2px" ,borderStyle:"inset"}}/>
             </div>
         );
     }

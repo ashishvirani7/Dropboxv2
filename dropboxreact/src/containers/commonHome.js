@@ -125,6 +125,7 @@ class CommonHome extends React.Component{
         });
     }
     onDrop =  (acceptedFiles) => {
+        
         const payload = new FormData();
         
         acceptedFiles.forEach(file => {
@@ -139,6 +140,7 @@ class CommonHome extends React.Component{
         .then((res) => {
             if (res.status === 201) {
                 console.log("Success");
+                
                 this.getFilesCall(requestData);
                 
             } else if (res.status === 401) {
@@ -147,12 +149,15 @@ class CommonHome extends React.Component{
         });
     }
 
-    onFileClick = (fileid,name) => {
+    onFileClick = (fileid,name,userid) => {
         console.log("file id : "+fileid);
-        API.fileDownload(fileid)
+        API.fileDownload({fileid,name,userid})
         .then(res =>{
             console.log(res);
-            fileDownload(res.data, name);
+            res.json().then(data => {
+                fileDownload(Buffer.from(data.file), name);
+            });
+            
         });
 
     };
@@ -195,12 +200,12 @@ class CommonHome extends React.Component{
                         key = {file.fileid}
                         disabled={false}
                         size={50}
-                        onClick={()=>this.onFileClick(file.fileid,file.name)}
+                        onClick={()=>this.onFileClick(file.fileid,file.name,this.props.activeUserData.loginData.userid)}
                         leftAvatar={
                         <Avatar
                             icon={<DriveFile />}
                             color={blue500}
-                            backgroundColor={fullWhite}
+                            backgroundColor={grey200}
                             size={40}
                             style={{marginLeft: 10}}
                             
@@ -212,6 +217,10 @@ class CommonHome extends React.Component{
                     <RaisedButton label="Delete" style={styles.mLeft} backgroundColor={red400}
                         onClick={()=>this.deleteFile(file.fileid,this.props.activeUserData.loginData.userid)}
                     />
+                    <RaisedButton label="Download" style={styles.mLeft} backgroundColor={green700}
+                        onClick={()=>this.onFileClick(file.fileid,file.name,this.props.activeUserData.loginData.userid)}
+                    />
+                    <hr style={{borderWidth:"1px"}}/>
                 </div>
             );   
         });
@@ -238,12 +247,14 @@ class CommonHome extends React.Component{
                             style={{marginLeft: 10}}
                             
                         />
-                        }><p style={{marginLeft:10}}>
+                        }><div className="row"><p style={{marginLeft:10}}>
                             {folder.name}</p>
+                            </div>
                     </ListItem>
                     <RaisedButton label="Delete" style={styles.mLeft} backgroundColor={red400}
                         onClick={()=>this.deleteFolder(folder.folderid,this.props.activeUserData.loginData.userid)}
                     />
+                    <hr style={{borderWidth:"1px"}}/>
                 </div>
             );   
         });
@@ -267,8 +278,9 @@ class CommonHome extends React.Component{
                 
                 <div className="row">
                     <div className="row" style={styles.accountMargin}>
-                        <h1>Home</h1>
+                        <h1>Dropbox</h1>
                     </div>
+                    <hr style={{borderWidth:"2px" ,borderStyle:"inset"}}/>
                     <Dropzone 
                         onDrop={this.onDrop.bind(this)} 
                         style={overlayStyle}

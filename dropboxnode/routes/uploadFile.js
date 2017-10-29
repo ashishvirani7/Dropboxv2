@@ -3,75 +3,43 @@ var router = express.Router();
 var mkdirp = require('mkdirp');
 var express = require('express');
 var router = express.Router();
-var multer  = require('multer');
 var fs = require('fs');
 var mongo = require("./mongo");
 var autoIncrement = require("mongodb-autoincrement");
 var mongoURL = "mongodb://localhost:27017/dropbox";
+var kafka = require('./kafka/client');
+const fileUpload = require('express-fileupload');
 
-var storage = multer.diskStorage({
-destination: function (req, file, cb) {
-    mkdirp('./temp/', function(err){
-        cb(null, './temp');
-    });
-},
-filename: function (req, file, cb) {
-    console.log(file);
-    cb(null, file.originalname);
-}
-});
+var topic_name = "upload_file_topic";
 
-var upload = multer({storage:storage});
 
-router.post('/', upload.single('myfile'), function (req, res, next) {
-    console.log(req.body.path);
-    console.log(req.file);
-    var oldpath = req.file.path;
-    var newpath = './UserFiles/'+req.body.userid+req.body.path+req.file.originalname;
-    console.log("new path: "+newpath);
-    fs.rename(oldpath, newpath, function (err) {
-      if (err) throw err;
-      else{
-        console.log("file uploaded");
-        var filedata={
-            ownerid:req.body.userid,
-            filename:req.file.filename,
-            filesize:req.file.size,
-            path:req.body.path,
-        };
-        try{
-            mongo.connect(mongoURL, function(db){
-                const filesCollectionName = 'files'; 
-                const filesCollection = db.collection(filesCollectionName);
-                filesCollection.findOne({name:filedata.filename,path:filedata.path},(err,file) =>{
-                    if(file){
+router.post('/', function (req, res, next) {
 
-                    }
-                    else{
-                        autoIncrement.getNextSequence(db, filesCollectionName, function (err, autoIndex) {
-                            console.log("file: "+JSON.stringify(filedata));
-                            filesCollection.insert(
-                                {
-                                    fileid:autoIndex,
-                                    ownerid:filedata.ownerid,
-                                    name:filedata.filename,
-                                    path:filedata.path,
-                                    size:filedata.filesize
-                                }
-                            );
-                        });
-                    }
-                });
-                   
-            });
+    file = req.files.myfile;
+    var ownerid=req.body.userid;
+    var path=req.body.path;
+    
+    kafka.make_request(topic_name,{file,path,ownerid}, function(err,results){
+        console.log('in result');
+        console.log(results);
+        if(err){
+            done(err,{});
         }
-        catch(e){
-            console.log(e);
+        else
+        {
+            if(results.code == 201){
+                console.log("File uploaded successfully");
+                return res.status(201).send({"message":"File uploaded"});
+            }
+            else {
+                res.status(202).send({"message":"Folder upload failed"});
+                console.log("Folder upload Failed");
+            }
         }
-      }
     });
-    res.status(201).end();
 });
+    
 
 
 module.exports=router;
+

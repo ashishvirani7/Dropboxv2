@@ -1,11 +1,15 @@
 {
-  "name": "Dropboxv2",
-  "version": "0.0.0",
-  "private": true,
+  "name": "kafks-back-end",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
   "scripts": {
-    "start": "./node_modules/nodemon/bin/nodemon.js ./bin/start.js"
+    "start": "./node_modules/nodemon/bin/nodemon.js ./server.js"
   },
+  "author": "Ashish Virani",
+  "license": "ISC",
   "dependencies": {
+    "nodemon": "^1.12.1",
     "bcrypt": "^1.0.3",
     "body-parser": "~1.17.1",
     "client-sessions": "^0.8.0",
@@ -16,7 +20,6 @@
     "debug": "~2.6.3",
     "ejs": "~2.3.3",
     "express": "~4.15.2",
-    "express-fileupload": "^0.3.0",
     "express-session": "^1.15.6",
     "fs": "0.0.1-security",
     "fs-extra": "^4.0.2",
@@ -37,10 +40,5 @@
     "react-keyed-file-browser": "^1.0.1",
     "rimraf": "^2.6.2",
     "serve-favicon": "~2.4.2"
-  },
-  "author": "Ashish Virani",
-  "license": "ISC",
-  "devDependencies": {
-    "nodemon": "^1.12.1"
   }
 }

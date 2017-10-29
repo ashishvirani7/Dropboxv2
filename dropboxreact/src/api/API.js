@@ -91,7 +91,7 @@ fetch(`${api}/getFiles`, {
 export const fileUpload = (payload) =>
 fetch(`${api}/uploadFile`, {
     method: 'POST',
-    body: payload
+    body:payload
 }).then(res => {
     return res;
 }).catch(error => {
@@ -99,14 +99,14 @@ fetch(`${api}/uploadFile`, {
         return error;
 });
 
-export const fileDownload = (fileid) =>
+export const fileDownload = (payload) =>
 fetch(`${api}/downloadFile`, {
     method: 'POST',
     headers: {
         ...headers,
         'Content-Type': 'application/json'
     },
-    body: JSON.stringify({fileid})
+    body: JSON.stringify(payload)
 }).then(res => {
     return res;
 }).catch(error => {
