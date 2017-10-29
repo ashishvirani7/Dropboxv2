@@ -17,6 +17,7 @@ router.post('/', function (req, res, next) {
         filesCollection.find({"ownerid":userid,"path": path}, function(err, fileData){
             if(err) throw err;
             else{
+                console.log(JSON.stringify(fileData));
                 res.status(201).send(fileData);
             }
             mongo.releaseConnection(connectionNumber);

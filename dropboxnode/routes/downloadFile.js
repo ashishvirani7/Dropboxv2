@@ -5,6 +5,7 @@ var path = require('path');
 
 router.post('/', function (req, res, next) {
     var fileid= parseInt(req.body.fileid);
+    var ownerid= parseInt(req.body.userid);
     console.log("fileid is :"+fileid);
     mongo.getConnection((connectionNumber,db)=>{
         const filesCollectionName = 'files'; 

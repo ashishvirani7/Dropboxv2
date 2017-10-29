@@ -76,10 +76,15 @@ try {
                     lastname,
                 });
                 var dir = './UserFiles/'+autoIndex; 
+                var homedir = './UserFiles/'+autoIndex+'/home'; 
                 mkdirp('./UserFiles/', function(err){
                     mkdirp(dir, function (err) {
                         if (err) console.error(err)
-                        else console.log('Cretaed!')
+                        else{
+                            mkdirp(homedir,(err) =>{
+                                console.log("created!");
+                            });
+                        }
                     });
                 });
             });

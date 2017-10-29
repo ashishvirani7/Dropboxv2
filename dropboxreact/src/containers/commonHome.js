@@ -10,6 +10,8 @@ import {connect} from 'react-redux';
 import {logout} from '../actions/logoutAction';
 import {getFiles} from '../actions/getFilesAction';
 import {getFolders} from '../actions/getFoldersAction';
+import {folderClick} from '../actions/folderClickAction';
+import {setPath} from '../actions/pathAction.js';
 import styles from './style.css';
 import store from '../index';
 import * as API from '../api/API';
@@ -26,6 +28,8 @@ import Avatar from 'material-ui/Avatar';
 import RaisedButton from 'material-ui/RaisedButton';
 import {
   blue500,
+  grey200,
+  red400,
   indigo900,
   orange800,
   deepOrange300,
@@ -33,14 +37,30 @@ import {
   purple500,
   green700,
   yellow50,
+  fullWhite,
 
 } from 'material-ui/styles/colors';
 var requestData;
-
+var currentpath;
 
 class CommonHome extends React.Component{
 
-    getFilesCall(){
+    onBackButtonEvent= (e) => {
+        e.preventDefault();
+        currentpath = this.props.location.pathname;
+        var length= currentpath.length;
+        if(currentpath[length-1]==="/"){
+            currentpath=currentpath.slice(0,-1);
+        }
+        this.props.setPath(currentpath);
+        this.props.history.push(currentpath);
+        window.location.reload();
+    };
+    componentDidMount() {
+        window.onpopstate = this.onBackButtonEvent;
+    }
+
+    getFilesCall(requestData){
         API.getFiles(requestData)
         .then((res) => {
             if (res.status === 201) {
@@ -55,7 +75,7 @@ class CommonHome extends React.Component{
         });    
     }
 
-    getFoldersCall(){
+    getFoldersCall(requestData){
         API.getFolders(requestData)
         .then((res) => {
             if (res.status === 201) {
@@ -64,25 +84,35 @@ class CommonHome extends React.Component{
                     this.props.getFolders(data);
                 });
                 
-            } else if (res.status === 401) {
+            }else if (res.status === 401) {
                 console.log("Fail");
             }
         });    
     }
 
     componentWillMount(){
-        requestData={path:this.props.path,userid:this.props.activeUserData.loginData.userid};
+        currentpath = this.props.location.pathname;
+        console.log("length: "+currentpath[currentpath.length-1]);
+        var length= currentpath.length;
+        if(currentpath[length-1]==="/"){
+            console.log("yo");
+            currentpath=currentpath.slice(0,-1);
+        }
+        console.log("path :"+currentpath);
+        this.props.setPath(currentpath);
+        requestData={path:currentpath+"/",userid:this.props.activeUserData.loginData.userid};
         API.doSessionCheck(this.props.activeUserData.loginData)
         .then((res) => {
             if (res.status === 202) {
                     this.props.history.push("/login");
                 }
         });
-        
-        this.getFilesCall();
-        this.getFoldersCall();
-    }    
+        this.getFilesCall(requestData);
+        this.getFoldersCall(requestData);
+    }
 
+    
+    
     handleLogout(){
         this.props.logout();
         API.doLogout(this.props.activeUserData.loginData)
@@ -109,7 +139,7 @@ class CommonHome extends React.Component{
         .then((res) => {
             if (res.status === 201) {
                 console.log("Success");
-                this.getFilesCall();
+                this.getFilesCall(requestData);
                 
             } else if (res.status === 401) {
                 console.log("Fail");
@@ -129,14 +159,18 @@ class CommonHome extends React.Component{
 
     onFolderClick = (folderid,name) => {
         console.log("folder id : "+folderid);
-        this.props.history.push();
+        this.props.folderClick(name);
+        //this.getFilesCall({path:this.props.location.pathname+name,userid:this.props.activeUserData.loginData.userid});
+        this.props.history.push(this.props.path+name);
+        window.location.reload();
+        //console.log("this is something: "+this.props.location.pathname);
     };
 
     deleteFile = (fileid,userid) => {
         API.deleteFile({fileid,userid})
         .then(res =>{
             if(res.status===201){
-                this.getFilesCall();
+                this.getFilesCall(requestData);
             }
         });
     };
@@ -145,7 +179,7 @@ class CommonHome extends React.Component{
         API.deleteFolder({folderid,userid})
         .then(res =>{
             if(res.status===201){
-                this.getFoldersCall();
+                this.getFoldersCall(requestData);
             }
         });
     };
@@ -153,9 +187,8 @@ class CommonHome extends React.Component{
 
     createFileList() {
        
-        console.log("files: "+Object.keys(this.props.files).length)
+        //console.log("files: "+Object.keys(this.props.files).length)
         return this.props.files.map((file) => {
-            console.log("ITEM:"+file.name);
             return(
                 <div>
                     <ListItem
@@ -166,8 +199,8 @@ class CommonHome extends React.Component{
                         leftAvatar={
                         <Avatar
                             icon={<DriveFile />}
-                            color={yellow50}
-                            backgroundColor={blue500}
+                            color={blue500}
+                            backgroundColor={fullWhite}
                             size={40}
                             style={{marginLeft: 10}}
                             
@@ -176,7 +209,7 @@ class CommonHome extends React.Component{
                             {file.name}</p>
                             
                     </ListItem>
-                    <RaisedButton label="Delete" primary={true} style={styles.mLeft}
+                    <RaisedButton label="Delete" style={styles.mLeft} backgroundColor={red400}
                         onClick={()=>this.deleteFile(file.fileid,this.props.activeUserData.loginData.userid)}
                     />
                 </div>
@@ -195,12 +228,12 @@ class CommonHome extends React.Component{
                         key = {folder.folderid}
                         disabled={false}
                         size={50}
-                        //onClick={()=>this.onFileClick(file.fileid,file.name)}
+                        onClick={()=>this.onFolderClick(folder.folderid,folder.name)}
                         leftAvatar={
                         <Avatar
                             icon={<DriveFolder />}
-                            color={yellow50}
-                            backgroundColor={blue500}
+                            color={blue500}
+                            backgroundColor={grey200}
                             size={40}
                             style={{marginLeft: 10}}
                             
@@ -208,7 +241,7 @@ class CommonHome extends React.Component{
                         }><p style={{marginLeft:10}}>
                             {folder.name}</p>
                     </ListItem>
-                    <RaisedButton label="Delete" primary={true} style={styles.mLeft}
+                    <RaisedButton label="Delete" style={styles.mLeft} backgroundColor={red400}
                         onClick={()=>this.deleteFolder(folder.folderid,this.props.activeUserData.loginData.userid)}
                     />
                 </div>
@@ -218,6 +251,8 @@ class CommonHome extends React.Component{
     }
 
     render(){
+        
+        console.log("Hey Im called");
         const overlayStyle = {
             top: 0,
             right: 0,
@@ -241,10 +276,10 @@ class CommonHome extends React.Component{
                         > 
                         {this.props.createFolder.create && <CreateFolder/>}
                         <MuiThemeProvider>
-                            <ListItem>
+                            <div>
                                 {this.createFolderList()}
                                 {this.createFileList()}
-                            </ListItem>
+                            </div>
                         </MuiThemeProvider>
                     
                     </Dropzone>
@@ -262,7 +297,6 @@ function mapStateToProps(state){
         files:state.files,
         createFolder:state.createFolder,
         folders:state.folders,
-
     };
 }
 
@@ -272,6 +306,9 @@ function matchDispatchToProps(dispatch){
             logout,
             getFiles,
             getFolders,
+            folderClick,
+            setPath,
+
         }
         ,dispatch);
   }

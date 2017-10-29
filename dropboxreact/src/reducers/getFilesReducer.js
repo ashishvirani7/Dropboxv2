@@ -9,7 +9,6 @@ export default function(state=[],action){
             return action.data;
         }
 
-    
         case "persist/REHYDRATE":
         {
             var incoming = action.payload.files

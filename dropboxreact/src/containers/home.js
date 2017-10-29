@@ -8,6 +8,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 
 import {logout} from '../actions/logoutAction';
 import {createFolder} from '../actions/createFolderAction';
+import {setPath} from '../actions/pathAction.js';
 import styles from './style.css';
 import store from '../index';
 import * as API from '../api/API';
@@ -31,7 +32,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import RaisedButton from 'material-ui/RaisedButton';
 import {
-  blue500,
+  blue300,
   indigo900,
   orange800,
   deepOrange300,
@@ -89,7 +90,9 @@ class Home extends React.Component{
     
       redirectToHome(){
         //this.props.history.push("/home/"+this.state.path);
+        this.props.setPath("/home");
         this.props.history.push("/home");
+        window.location.reload();
       }
     
       redirectToLogs(){
@@ -108,7 +111,7 @@ class Home extends React.Component{
                 <MuiThemeProvider>
                   
                   <List style={style1}>
-                    <ListItem primaryText="Home" leftIcon={<ActionHome/>} color={blue500} onClick={()=>{this.redirectToLogs()}}/>
+                    <ListItem primaryText="Home" leftIcon={<ActionHome/>} color={blue300} onClick={()=>{this.redirectToLogs()}}/>
                     <ListItem primaryText="Groups" leftIcon={<ActionGroup color={indigo900}/>} />
                     <ListItem primaryText="Files" leftIcon={<DriveFile />} onClick={()=>{this.redirectToHome()}}/>
                   </List>
@@ -117,7 +120,7 @@ class Home extends React.Component{
                 </div>
               </div>
               <div className="col-md-7">
-                <Route exact path='/home' component={CommonHome}/>
+                <Route path='/home' component={CommonHome}/>
                 <Route exact path='/logs' component={Logs}/>
                 <Route exact path='/account' component={Account}/>
               </div>
@@ -159,7 +162,7 @@ class Home extends React.Component{
                     <MuiThemeProvider>
                       <div className="col-md-offset-1">
                         
-                          <RaisedButton label="Create Folder"  backgroundColor={blue500} style={{marginTop:"10px"}}
+                          <RaisedButton label="Create Folder"  backgroundColor={blue300} style={{marginTop:"40px"}}
                               onClick={()=> this.props.createFolder()}  
                           />
                       </div>
@@ -184,6 +187,7 @@ function matchDispatchToProps(dispatch){
         {
             logout:logout,
             createFolder,
+            setPath,
 
         }
         ,dispatch);

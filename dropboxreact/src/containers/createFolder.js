@@ -16,8 +16,8 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import {
-    red500,
-    green400,
+    red300,
+    green300,
   } from 'material-ui/styles/colors';
 
 class CreateFolder extends React.Component{
@@ -67,10 +67,10 @@ class CreateFolder extends React.Component{
                             />
                         </div>
                         <div className="col-md-5">
-                            <RaisedButton label="Create Folder"  backgroundColor={green400}
+                            <RaisedButton label="Create Folder"  backgroundColor={green300}
                                 onClick={()=> this.createFolder()}  
                             />
-                            <RaisedButton label="Cancel" backgroundColor={red500}
+                            <RaisedButton label="Cancel" backgroundColor={red300}
                                 onClick={()=> this.exitCreateFolder()}  
                             />
                         </div>

@@ -15,7 +15,8 @@ const  App = () => {
         <Route exact path="/login" component={Header}/>
         <Route exact path="/signup" component={Header}/>
       
-        <Route exact path="/home" component={Home}/>
+        
+        <Route path="/home/" component={Home}/>
         <Route exact path="/account" component={Home}/>
         <Route exact path='/logs' component={Home}/>
         <NotificationContainer/>

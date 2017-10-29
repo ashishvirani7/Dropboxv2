@@ -5,7 +5,12 @@ export default function(state={},action){
         
         case "SET_PATH":
         {
-            return action.data;
+            return action.data+"/";
+        }
+
+        case "FOLDER_CLICK":
+        {
+            return state+action.data+"/";
         }
 
         case "persist/REHYDRATE":

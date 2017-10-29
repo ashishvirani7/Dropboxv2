@@ -28,6 +28,7 @@ router.post('/', upload.single('myfile'), function (req, res, next) {
     console.log(req.file);
     var oldpath = req.file.path;
     var newpath = './UserFiles/'+req.body.userid+req.body.path+req.file.originalname;
+    console.log("new path: "+newpath);
     fs.rename(oldpath, newpath, function (err) {
       if (err) throw err;
       else{
