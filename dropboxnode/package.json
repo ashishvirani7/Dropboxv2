@@ -36,7 +36,7 @@
     "passport-local": "^1.0.0",
     "react-keyed-file-browser": "^1.0.1",
     "rimraf": "^2.6.2",
-    "serve-favicon": "~2.4.2"
+    "serve-favicon": "^2.4.5"
   },
   "author": "Ashish Virani",
   "license": "ISC",

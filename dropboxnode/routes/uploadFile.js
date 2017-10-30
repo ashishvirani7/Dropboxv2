@@ -32,8 +32,8 @@ router.post('/', function (req, res, next) {
                 return res.status(201).send({"message":"File uploaded"});
             }
             else {
-                res.status(202).send({"message":"Folder upload failed"});
-                console.log("Folder upload Failed");
+                res.status(202).send({"message":"File upload failed"});
+                console.log("File upload Failed");
             }
         }
     });

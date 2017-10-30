@@ -11,6 +11,7 @@ import {logout} from '../actions/logoutAction';
 import {getFiles} from '../actions/getFilesAction';
 import {getFolders} from '../actions/getFoldersAction';
 import {folderClick} from '../actions/folderClickAction';
+import {createFolderDone} from '../actions/createFolderAction';
 import {setPath} from '../actions/pathAction.js';
 import styles from './style.css';
 import store from '../index';
@@ -143,8 +144,9 @@ class CommonHome extends React.Component{
                 
                 this.getFilesCall(requestData);
                 
-            } else if (res.status === 401) {
+            } else if (res.status === 202) {
                 console.log("Fail");
+                NotificationManager.error( "File upload failed","File exists", 2500, true);
             }  
         });
     }
@@ -164,10 +166,13 @@ class CommonHome extends React.Component{
 
     onFolderClick = (folderid,name) => {
         console.log("folder id : "+folderid);
-        this.props.folderClick(name);
         //this.getFilesCall({path:this.props.location.pathname+name,userid:this.props.activeUserData.loginData.userid});
+        console.log(this.props.path);
         this.props.history.push(this.props.path+name);
-        window.location.reload();
+        this.getFilesCall({path:this.props.path+name+"/",userid:this.props.activeUserData.loginData.userid});
+        this.getFoldersCall({path:this.props.path+name+"/",userid:this.props.activeUserData.loginData.userid});
+        this.props.folderClick(name);
+        //window.location.reload();
         //console.log("this is something: "+this.props.location.pathname);
     };
 
@@ -175,7 +180,8 @@ class CommonHome extends React.Component{
         API.deleteFile({fileid,userid})
         .then(res =>{
             if(res.status===201){
-                this.getFilesCall(requestData);
+                this.getFilesCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
+                this.getFoldersCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
             }
         });
     };
@@ -184,7 +190,8 @@ class CommonHome extends React.Component{
         API.deleteFolder({folderid,userid})
         .then(res =>{
             if(res.status===201){
-                this.getFoldersCall(requestData);
+                this.getFilesCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
+                this.getFoldersCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
             }
         });
     };
@@ -261,6 +268,10 @@ class CommonHome extends React.Component{
     
     }
 
+    exitCreateFolder(){
+        this.props.createFolderDone();
+    }
+
     render(){
         
         console.log("Hey Im called");
@@ -320,6 +331,7 @@ function matchDispatchToProps(dispatch){
             getFolders,
             folderClick,
             setPath,
+            createFolderDone,
 
         }
         ,dispatch);

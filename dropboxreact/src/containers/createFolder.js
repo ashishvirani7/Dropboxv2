@@ -3,6 +3,7 @@ import styles from './style.css';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 import {createFolder} from '../actions/createFolderAction';
 import {createFolderDone} from '../actions/createFolderAction';
@@ -46,6 +47,10 @@ class CreateFolder extends React.Component{
             if (res.status === 201) {
                 this.getFoldersCall(requestData);
             }
+            else if(res.status === 202){
+                console.log("Fail");
+                NotificationManager.error( "Folder creation failed","Folder exists", 2500, true);
+            }
         });
     }
 
@@ -76,6 +81,7 @@ class CreateFolder extends React.Component{
                         </div>
                     </div>
                 </MuiThemeProvider>
+                <hr style={{borderWidth:"1px"}}/>
             </div>
         );
     }

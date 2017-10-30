@@ -9,6 +9,8 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import {logout} from '../actions/logoutAction';
 import {createFolder} from '../actions/createFolderAction';
 import {setPath} from '../actions/pathAction.js';
+import {getFiles} from '../actions/getFilesAction';
+import {getFolders} from '../actions/getFoldersAction';
 import styles from './style.css';
 import store from '../index';
 import * as API from '../api/API';
@@ -56,12 +58,36 @@ const style1 = {
 
 class Home extends React.Component{
 
-    constructor(props){
-        super(props);
-        this.state = {
-          path:props.match.params.path
-        };
-      }
+    getFilesCall(requestData){
+      API.getFiles(requestData)
+      .then((res) => {
+          if (res.status === 201) {
+              res.json().then(data => {
+                  //console.log("got this: "+data);
+                  this.props.getFiles(data);
+              });
+              
+          } else if (res.status === 401) {
+              console.log("Fail");
+          }
+      });    
+  }
+
+  getFoldersCall(requestData){
+      API.getFolders(requestData)
+      .then((res) => {
+          if (res.status === 201) {
+              res.json().then(data => {
+                  //console.log("got this: "+data);
+                  this.props.getFolders(data);
+              });
+              
+          }else if (res.status === 401) {
+              console.log("Fail");
+          }
+      });    
+  }
+
 
     componentWillMount(){
         API.doSessionCheck(this.props.activeUserData.loginData)
@@ -88,12 +114,14 @@ class Home extends React.Component{
         this.props.history.push("/account");
       }
     
-      redirectToHome(){
-        //this.props.history.push("/home/"+this.state.path);
-        this.props.setPath("/home");
-        this.props.history.push("/home");
-        window.location.reload();
-      }
+    redirectToHome(){
+      //this.props.history.push("/home/"+this.state.path);
+      this.props.history.push("/home");
+      this.getFilesCall({path:"/home/",userid:this.props.activeUserData.loginData.userid});
+      this.getFoldersCall({path:"/home/",userid:this.props.activeUserData.loginData.userid});
+      this.props.setPath("/home");
+      //window.location.reload();
+    }
     
       redirectToLogs(){
         //this.props.history.push("/logs/"+this.state.path);
@@ -188,6 +216,8 @@ function matchDispatchToProps(dispatch){
             logout:logout,
             createFolder,
             setPath,
+            getFiles,
+            getFolders,
 
         }
         ,dispatch);

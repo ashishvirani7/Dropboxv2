@@ -16,33 +16,43 @@ function handle_request(msg, callback){
         mongo.connect(mongoURL, function(db){
             const foldersCollectionName = 'folders'; 
             const foldersCollection = db.collection(foldersCollectionName);
-            
-            autoIncrement.getNextSequence(db, foldersCollectionName, function (err, autoIndex) {
-                
-                foldersCollection.insert(
-                    {
-                        folderid:autoIndex,
-                        ownerid:ownerid,
-                        name:foldername,
-                        path:path,
-                    }
-                );
-            });
-            var dir = './UserFiles/'+ownerid+path+foldername+'/'; 
-            mkdirp(dir, function(err){
-                if (err) {
-                    console.error(err);
+
+            foldersCollection.findOne({name:foldername,path},(err,folder) =>{
+                if(folder){
                     res.code="202";
-                    res.data="Folder creation failed";
+                    res.data="folder exists";
                     callback(null,res);
                 }
-                else console.log('Cretaed!')
-            });
+                else{
+                    autoIncrement.getNextSequence(db, foldersCollectionName, function (err, autoIndex) {
+                        
+                        foldersCollection.insert(
+                            {
+                                folderid:autoIndex,
+                                ownerid:ownerid,
+                                name:foldername,
+                                path:path,
+                            }
+                        );
+                    });
+                    var dir = './UserFiles/'+ownerid+path+foldername+'/'; 
+                    mkdirp(dir, function(err){
+                        if (err) {
+                            console.error(err);
+                            res.code="202";
+                            res.data="Folder creation failed";
+                            callback(null,res);
+                        }
+                        else console.log('Cretaed!')
+                    });
+                    res.code="201";
+                    res.data="folder created";
+                    callback(null,res);
+                }
+            });       
+            
+            
         });
-        res.code="201";
-        res.data="Folder created";
-        callback(null,res);
-        //return res.status(201).send({"message":"Folder Created"});
     }
     catch(e){
         console.log(e);
