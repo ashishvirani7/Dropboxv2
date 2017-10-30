@@ -39,19 +39,26 @@ class CreateFolder extends React.Component{
     }
 
     createFolder(){
-        this.props.createFolderDone();
-        var requestData={path:this.props.path,userid:this.props.activeUserData.loginData.userid};
-        var payload={userid:this.props.activeUserData.loginData.userid,path:this.props.path,foldername:this.props.foldername};
-        API.createFolder(payload)
-        .then((res) => {
-            if (res.status === 201) {
-                this.getFoldersCall(requestData);
-            }
-            else if(res.status === 202){
-                console.log("Fail");
-                NotificationManager.error( "Folder creation failed","Folder exists", 2500, true);
-            }
-        });
+        var foldername=this.props.foldername;
+        if(foldername.length<=0){
+            NotificationManager.error( "Please enter folder name","Folder creation Failed", 2500, true);
+        }
+        else{
+            this.props.createFolderDone();
+            var requestData={path:this.props.path,userid:this.props.activeUserData.loginData.userid};
+            var payload={userid:this.props.activeUserData.loginData.userid,path:this.props.path,foldername:this.props.foldername};
+            API.createFolder(payload)
+            .then((res) => {
+                if (res.status === 201) {
+                    this.getFoldersCall(requestData);
+                }
+                else if(res.status === 202){
+                    console.log("Fail");
+                    NotificationManager.error( "Folder creation failed","Folder exists", 2500, true);
+                }
+            });
+        }
+        
     }
 
     exitCreateFolder(){

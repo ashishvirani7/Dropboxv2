@@ -126,6 +126,7 @@ class CommonHome extends React.Component{
         });
     }
     onDrop =  (acceptedFiles) => {
+        this.props.createFolderDone();
         
         const payload = new FormData();
         
@@ -142,7 +143,8 @@ class CommonHome extends React.Component{
             if (res.status === 201) {
                 console.log("Success");
                 
-                this.getFilesCall(requestData);
+                this.getFilesCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
+                this.getFoldersCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
                 
             } else if (res.status === 202) {
                 console.log("Fail");
@@ -152,6 +154,7 @@ class CommonHome extends React.Component{
     }
 
     onFileClick = (fileid,name,userid) => {
+        this.props.createFolderDone();
         console.log("file id : "+fileid);
         API.fileDownload({fileid,name,userid})
         .then(res =>{
@@ -165,6 +168,7 @@ class CommonHome extends React.Component{
     };
 
     onFolderClick = (folderid,name) => {
+        this.props.createFolderDone();
         console.log("folder id : "+folderid);
         //this.getFilesCall({path:this.props.location.pathname+name,userid:this.props.activeUserData.loginData.userid});
         console.log(this.props.path);
@@ -177,6 +181,7 @@ class CommonHome extends React.Component{
     };
 
     deleteFile = (fileid,userid) => {
+        this.props.createFolderDone();
         API.deleteFile({fileid,userid})
         .then(res =>{
             if(res.status===201){
@@ -187,6 +192,7 @@ class CommonHome extends React.Component{
     };
 
     deleteFolder = (folderid,userid) => {
+        this.props.createFolderDone();
         API.deleteFolder({folderid,userid})
         .then(res =>{
             if(res.status===201){

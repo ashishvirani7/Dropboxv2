@@ -17,7 +17,7 @@ function handle_request(msg, callback){
             const foldersCollectionName = 'folders'; 
             const foldersCollection = db.collection(foldersCollectionName);
 
-            foldersCollection.findOne({name:foldername,path},(err,folder) =>{
+            foldersCollection.findOne({name:foldername,path,ownerid},(err,folder) =>{
                 if(folder){
                     res.code="202";
                     res.data="folder exists";

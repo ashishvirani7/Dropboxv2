@@ -11,6 +11,7 @@ import {createFolder} from '../actions/createFolderAction';
 import {setPath} from '../actions/pathAction.js';
 import {getFiles} from '../actions/getFilesAction';
 import {getFolders} from '../actions/getFoldersAction';
+import {createFolderDone} from '../actions/createFolderAction';
 import styles from './style.css';
 import store from '../index';
 import * as API from '../api/API';
@@ -116,6 +117,7 @@ class Home extends React.Component{
     
     redirectToHome(){
       //this.props.history.push("/home/"+this.state.path);
+      this.props.createFolderDone();
       this.props.history.push("/home");
       this.getFilesCall({path:"/home/",userid:this.props.activeUserData.loginData.userid});
       this.getFoldersCall({path:"/home/",userid:this.props.activeUserData.loginData.userid});
@@ -218,6 +220,8 @@ function matchDispatchToProps(dispatch){
             setPath,
             getFiles,
             getFolders,
+            createFolderDone,
+
 
         }
         ,dispatch);

@@ -25,7 +25,7 @@ function handle_request(msg, callback){
                 console.log("in mongo");
                 const filesCollectionName = 'files'; 
                 const filesCollection = db.collection(filesCollectionName);
-                filesCollection.findOne({name:filename,path:path},(err,file) =>{
+                filesCollection.findOne({name:filename,path:path,ownerid},(err,file) =>{
                     if(file){
                         res.code="202";
                         res.data="file exists";

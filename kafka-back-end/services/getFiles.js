@@ -17,6 +17,7 @@ function handle_request(msg, callback){
         filesCollection.find({ownerid,path}, function(err, fileData){
             if(err) throw err;
             else{
+                console.log("File is: "+fileData);
                 res.code="201";
                 res.data=fileData;
                 callback(null,res);
