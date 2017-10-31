@@ -9,7 +9,10 @@ export default {
     mLeft: {
         marginLeft: 20,
     },
-    mTop:{
+    mTopLogin:{
+        marginTop: "250px",
+    },
+    mTopSignup:{
         marginTop: "200px",
     },
     imageStyle : {

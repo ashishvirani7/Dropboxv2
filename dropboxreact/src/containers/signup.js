@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
-import {persistStore, autoRehydrate} from 'redux-persist'
+import {persistStore, autoRehydrate} from 'redux-persist';
+import CryptoJS from 'crypto-js'
 
 import * as API from '../api/API';
 import store from '../index';
@@ -74,7 +75,17 @@ class Signup extends React.Component{
                     this.setState(...this.state,{errorFirstText:""});
                     if((userdata.lastname).toString().length > 1 ){
                         this.setState(...this.state,{errorLastText:""});
-                        API.doSignup(userdata)
+
+                        var cipherVal=CryptoJS.AES.encrypt(userdata.password,"ashish7");
+                        
+                        var signupDetails={
+                            username:userdata.username,
+                            password:cipherVal.toString(),
+                            firstname:userdata.firstname,
+                            lastname:userdata.lastname,
+                        }
+
+                        API.doSignup(signupDetails)
                         .then((response) => {
                             if (response.status === 202) {
                                 NotificationManager.error("Username exists", "Signup failed", 2500, true);
@@ -131,7 +142,7 @@ class Signup extends React.Component{
             <MuiThemeProvider muiTheme={muiTheme}>
             
                 <div className="row">
-                    <div style={styles.mTop}>
+                    <div style={styles.mTopSignup}>
                     <AppBar title="Signup" iconElementLeft={<IconButton><SignupAvtar /></IconButton>}
                     iconElementRight={<FlatButton label="Sign in" onClick={()=>this.handleLogin()}/>}
                     />
@@ -152,8 +163,8 @@ class Signup extends React.Component{
                     this.onLastChange(event)}}
                      />
                     <br/>
-                    <TextField hintText="Email address" style={styles.mLeft} underlineShow={false} name="username"
-                    floatingLabelText="Enter email or username" hintText="Email" errorText={this.state.errorEmailText}
+                    <TextField hintText="Email" style={styles.mLeft} underlineShow={false} name="username"
+                    floatingLabelText="Enter email" hintText="Email" errorText={this.state.errorEmailText}
                     onChange={(event)=>
                     {event.persist();
                     this.props.changeValue(event);

@@ -208,24 +208,39 @@ class CommonHome extends React.Component{
         //console.log("files: "+Object.keys(this.props.files).length)
         return this.props.files.map((file) => {
             return(
-                <div>
-                    <ListItem
-                        key = {file.fileid}
-                        disabled={false}
-                        size={50}
-                        onClick={()=>this.onFileClick(file.fileid,file.name,this.props.activeUserData.loginData.userid)}
-                        leftAvatar={
-                        <Avatar
-                            icon={<DriveFile />}
-                            color={blue500}
-                            backgroundColor={grey200}
-                            size={40}
-                            style={{marginLeft: 10}}
-                            
-                        />
-                        }><p style={{marginLeft:10}}>
-                            {file.name}</p>
-                            
+                // <ListItem>
+                //     <div className="row">
+                //         <div className="col-md-4">
+                //             {file.name}
+                //         </div>
+                //         <div className="col-md-4">
+                //             Date
+                //         </div>
+                //         <div className="col-md-2">
+
+                //         </div>
+                //         <div className="col-md-2">
+                //         </div>
+                //     </div>
+                // </ListItem>
+            <div>
+                <ListItem
+                    key = {file.fileid}
+                    disabled={false}
+                    size={50}
+                    onClick={()=>this.onFileClick(file.fileid,file.name,this.props.activeUserData.loginData.userid)}
+                    leftAvatar={
+                    <Avatar
+                        icon={<DriveFile />}
+                        color={blue500}
+                        backgroundColor={grey200}
+                        size={40}
+                        style={{marginLeft: 10}}
+                        
+                    />
+                    }><p style={{marginLeft:10}}>
+                        {file.name}</p>
+                        
                     </ListItem>
                     <RaisedButton label="Delete" style={styles.mLeft} backgroundColor={red400}
                         onClick={()=>this.deleteFile(file.fileid,this.props.activeUserData.loginData.userid)}
@@ -233,10 +248,12 @@ class CommonHome extends React.Component{
                     <RaisedButton label="Download" style={styles.mLeft} backgroundColor={green700}
                         onClick={()=>this.onFileClick(file.fileid,file.name,this.props.activeUserData.loginData.userid)}
                     />
-                    <hr style={{borderWidth:"1px"}}/>
-                </div>
+                    <hr style={{borderWidth:"1px"}}/>            
+                </div>   
             );   
         });
+
+                    
         
     }
 

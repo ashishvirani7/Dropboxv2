@@ -2,6 +2,10 @@ var mongo = require("./mongo");
 var mongoURL = "mongodb://localhost:27017/dropbox";
 var autoIncrement = require("mongodb-autoincrement");
 var mkdirp = require('mkdirp');
+var bcrypt = require('bcrypt');
+var CryptoJS = require("crypto-js");
+
+const saltRounds = 10;
 
 function handle_request(msg, callback){
 
@@ -17,9 +21,12 @@ function handle_request(msg, callback){
         const personalCollectionName = 'user'; 
         const personalCollection = db.collection(personalCollectionName);
         const username=msg.username;
-        const password=msg.password;
+        var password=msg.password;
         const firstname=msg.firstname;
         const lastname=msg.lastname;
+
+        var bytes  = CryptoJS.AES.decrypt(password.toString(), "ashish7");
+        password = bytes.toString(CryptoJS.enc.Utf8);
 
         loginCollection.findOne({"username":username}, function(err, user){
             if (user) {
@@ -31,31 +38,35 @@ function handle_request(msg, callback){
                 callback(null,res);
             } 
             else {
-                autoIncrement.getNextSequence(db, loginCollectionName, function (err, autoIndex) {
-                    
-                    loginCollection.insert({
-                        userid: autoIndex+'',
-                        username:username,
-                        password:password,
-                    });
-                    personalCollection.insert({
-                        userid: autoIndex+'',
-                        firstname,
-                        lastname,
-                    });
-                    var dir = './UserFiles/'+autoIndex; 
-                    var homedir = './UserFiles/'+autoIndex+'/home'; 
-                    mkdirp('./UserFiles/', function(err){
-                        mkdirp(dir, function (err) {
-                            if (err) console.error(err)
-                            else{
-                                mkdirp(homedir,(err) =>{
-                                    console.log("created!");
-                                });
-                            }
+                bcrypt.hash(password, saltRounds, function(err, hash) {
+                    autoIncrement.getNextSequence(db, loginCollectionName, function (err, autoIndex) {
+                        loginCollection.insert({
+                            userid: autoIndex+'',
+                            username:username,
+                            password:hash,
+                        });
+                        personalCollection.insert({
+                            userid: autoIndex+'',
+                            firstname,
+                            lastname,
+                        });
+                        var dir = './UserFiles/'+autoIndex; 
+                        var homedir = './UserFiles/'+autoIndex+'/home'; 
+                        mkdirp('./UserFiles/', function(err){
+                            mkdirp(dir, function (err) {
+                                if (err) console.error(err)
+                                else{
+                                    mkdirp(homedir,(err) =>{
+                                        console.log("created!");
+                                    });
+                                }
+                            });
                         });
                     });
                 });
+                
+                
+            
                 //return res.status(201).send({"message":"Signup Successful"});
                 res.code="201";
                 res.data="Signup Successful";

@@ -1,8 +1,8 @@
 import {REHYDRATE} from 'redux-persist/constants';
 
 const initialState={
-    loginData:{},
-    activeUserData:{},
+    loginData:{username:''},
+    personalData:{firstname:'',lastname:''},
 }
 
 export default function(state=initialState,action){

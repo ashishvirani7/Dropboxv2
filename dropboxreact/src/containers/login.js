@@ -2,12 +2,9 @@ import React, { Component } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
-import {persistStore, autoRehydrate} from 'redux-persist'
+import {persistStore, autoRehydrate} from 'redux-persist';
 
-import sha256 from 'crypto-js/sha256';
-import hmacSHA512 from 'crypto-js/hmac-sha512';
-import Base64 from 'crypto-js/enc-base64';
-import CryptoJS from 'crypto-js'
+import CryptoJS from 'crypto-js';
 
 import {changeValue} from '../actions/loginAction.js';
 import {loginSuccess} from '../actions/loginAction.js';
@@ -34,7 +31,9 @@ import {
     cyan900, cyan700,
     pinkA200,
     grey100, grey300, grey400, grey500,
-    white, darkBlack, fullBlack,blue500
+    white, darkBlack, fullBlack,blue500,
+    blue400,
+
 } 
 from 'material-ui/styles/colors';
 
@@ -83,7 +82,15 @@ class Login extends React.Component{
         if(userdata.username.match(emailRegex)){
             if((userdata.password).toString().length > 0 ){
                 this.setState({ errorEmailText: '',errorPasswordText: '' });
-                API.doLogin(userdata)
+
+                var cipherVal=CryptoJS.AES.encrypt(userdata.password,"ashish7");
+                
+                var loginDetails={
+                    username:userdata.username,
+                    password:cipherVal.toString(),
+                }
+
+                API.doLogin(loginDetails)
                 .then((res) => {
                     if (res.status === 201) {
                         console.log("Success");
@@ -129,14 +136,14 @@ class Login extends React.Component{
                         <MuiThemeProvider muiTheme={muiTheme}>
                         
                             <div className="row">
-                                <div style={styles.mTop}>
+                                <div style={styles.mTopLogin}>
                                 <AppBar title="Signin" iconElementLeft={<IconButton><SigninAvtar /></IconButton>}
                                     iconElementRight={<FlatButton label="Sign up" onClick={()=>this.handleSignup()}/>}/>
                                 <Paper zDepth={5}>
                                 <br/>
                                 
-                                <TextField hintText="Email address" style={styles.mLeft} underlineShow={false} name="username"
-                                floatingLabelText="Enter email or username" hintText="Email" errorText={this.state.errorEmailText}
+                                <TextField hintText="Email" style={styles.mLeft} underlineShow={false} name="username"
+                                floatingLabelText="Enter email" hintText="Email" errorText={this.state.errorEmailText}
                                 onChange={(event)=>
                                 {event.persist();
                                 this.props.changeValue(event);
