@@ -6,6 +6,7 @@ import path from './pathReducer';
 import files from './getFilesReducer';
 import createFolder from './createFolderReducer';
 import folders from './getFoldersReducer';
+import activity from './activityReducer';
 
 const allReducers = combineReducers({
     loginData,
@@ -15,6 +16,8 @@ const allReducers = combineReducers({
     files,
     createFolder,
     folders,
+    activity,
+    
         
  });
  

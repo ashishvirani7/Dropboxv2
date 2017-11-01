@@ -14,8 +14,8 @@ String.prototype.replaceAll = function(search, replacement) {
 };
 
 router.post('/', function (req, res, next) {
-    var folderid= parseInt(req.body.folderid);
-    var ownerid= parseInt(req.body.userid);
+    var folderid= (req.body.folderid);
+    var ownerid= (req.body.userid);
     
     kafka.make_request(topic_name,{folderid,ownerid}, function(err,results){
         console.log('in result');

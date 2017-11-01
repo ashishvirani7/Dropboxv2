@@ -27,18 +27,26 @@ import DriveFile from 'material-ui/svg-icons/editor/insert-drive-file';
 import DriveFolder from 'material-ui/svg-icons/file/folder-open';
 import Avatar from 'material-ui/Avatar';
 import RaisedButton from 'material-ui/RaisedButton';
+import StarBlank from 'material-ui/svg-icons/toggle/star-border';
+import StarShaded from 'material-ui/svg-icons/toggle/star'; 
+import FileDownload from 'material-ui/svg-icons/file/file-download';
+import FileDelete from 'material-ui/svg-icons/action/delete';
+import Share from 'material-ui/svg-icons/social/share';
+import Divider from 'material-ui/Divider';
 import {
   blue500,
   grey200,
-  red400,
+  red300,
   indigo900,
   orange800,
   deepOrange300,
   pink400,
   purple500,
-  green700,
+  green300,
   yellow50,
   fullWhite,
+  grey100,
+
 
 } from 'material-ui/styles/colors';
 var requestData;
@@ -202,89 +210,267 @@ class CommonHome extends React.Component{
         });
     };
 
+    onStarFileClick = (fileid) => {
+        this.props.createFolderDone();
+        API.starFile({fileid})
+        .then(res => {
+            if(res.status===201){
+                this.getFilesCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
+                this.getFoldersCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
+            }
+        });
+    }
+
+    onUnStarFileClick = (fileid) => {
+        this.props.createFolderDone();
+        API.unStarFile({fileid})
+        .then(res => {
+            if(res.status===201){
+                this.getFilesCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
+                this.getFoldersCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
+            }
+        });
+    }
+
+    onStarFolderClick = (folderid) => {
+        this.props.createFolderDone();
+        API.starFolder({folderid})
+        .then(res => {
+            if(res.status===201){
+                this.getFilesCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
+                this.getFoldersCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
+            }
+        });
+    }
+
+    onUnStarFolderClick = (folderid) => {
+        this.props.createFolderDone();
+        API.unStarFolder({folderid})
+        .then(res => {
+            if(res.status===201){
+                this.getFilesCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
+                this.getFoldersCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
+            }
+        });
+    }
+
+    onFileShareClick = (fileid) => {
+        this.props.createFolderDone();
+        API.fileShare({fileid})
+        .then(res => {
+            if(res.status===201){
+                this.getFilesCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
+                this.getFoldersCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
+            }
+        });
+    }
+    
+    onFolderShareClick = (folderid) => {
+        this.props.createFolderDone();
+        API.folderShare({folderid})
+        .then(res => {
+            if(res.status===201){
+                this.getFilesCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
+                this.getFoldersCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
+            }
+        });
+    }
+    
 
     createFileList() {
        
         //console.log("files: "+Object.keys(this.props.files).length)
         return this.props.files.map((file) => {
             return(
-                // <ListItem>
-                //     <div className="row">
-                //         <div className="col-md-4">
-                //             {file.name}
-                //         </div>
-                //         <div className="col-md-4">
-                //             Date
-                //         </div>
-                //         <div className="col-md-2">
+                
+                    <div className="row">
+                        
+                        <div className="col-md-9">
+                            <div className="col-md-6">
+                                <ListItem
+                                    key = {file.fileid}
+                                    disabled={true}
+                                    size={50} >
 
-                //         </div>
-                //         <div className="col-md-2">
-                //         </div>
-                //     </div>
-                // </ListItem>
-            <div>
-                <ListItem
-                    key = {file.fileid}
-                    disabled={false}
-                    size={50}
-                    onClick={()=>this.onFileClick(file.fileid,file.name,this.props.activeUserData.loginData.userid)}
-                    leftAvatar={
-                    <Avatar
-                        icon={<DriveFile />}
-                        color={blue500}
-                        backgroundColor={grey200}
-                        size={40}
-                        style={{marginLeft: 10}}
+                                    <div className="row">
+                                        <div className="col-md-3">
+                                        <Avatar
+                                            icon={<DriveFile />}
+                                            color={blue500}
+                                            backgroundColor={grey100}
+                                            
+                                        />
+                                        </div>
+                                        <div className="col-md-6" style={{marginTop:"13px"}}>
+                                            {file.name}
+                                        </div>
+                                    </div>
+                                </ListItem>
+                            </div>
+                            <div className="col-md-2">
+                                <ListItem disabled={true}>
+                                {!file.starred &&<IconButton iconStyle={styles.iconStyles.verySmallIcon} tooltip="Star"
+                                    onClick={()=> this.onStarFileClick(file.fileid)}>
+                            
+                                    <StarBlank backgroundColor={fullWhite} color={blue500}
+                                        style={styles.iconStyles.verySmall} 
+                                        onClick={()=> this.onStarFileClick(file.fileid)}/>
+                                </IconButton>}
+                                {file.starred &&<IconButton iconStyle={styles.iconStyles.verySmallIcon} tooltip="UnStar"
+                                    onClick={()=> this.onUnStarFileClick(file.fileid)}>
+                            
+                                <StarShaded backgroundColor={fullWhite} color={blue500}
+                                        style={styles.iconStyles.verySmall} 
+                                        onClick={()=> this.onUnStarFileClick(file.fileid)}/>
+                                </IconButton>}
+                                </ListItem>
+                            </div>
+                            <div className="col-md-4">
+                                <ListItem disabled={true}>
+                                    <div className="row" style={{marginTop:"13px"}}>
+                                        
+                                        {file.dateUploaded}
+                                    
+                                    </div>
+                                </ListItem>
+                            </div>
+                            
+                        </div>
                         
-                    />
-                    }><p style={{marginLeft:10}}>
-                        {file.name}</p>
-                        
-                    </ListItem>
-                    <RaisedButton label="Delete" style={styles.mLeft} backgroundColor={red400}
-                        onClick={()=>this.deleteFile(file.fileid,this.props.activeUserData.loginData.userid)}
-                    />
-                    <RaisedButton label="Download" style={styles.mLeft} backgroundColor={green700}
-                        onClick={()=>this.onFileClick(file.fileid,file.name,this.props.activeUserData.loginData.userid)}
-                    />
-                    <hr style={{borderWidth:"1px"}}/>            
-                </div>   
+                        <div className="col-md-3">
+                            <ListItem disabled={true}>
+                            <div className="col-md-4">
+                                
+                                    <IconButton iconStyle={styles.iconStyles.smallIcon}
+                                    style={styles.iconStyles.small} tooltip="Download"
+                                        >
+                                        <FileDownload onClick={()=> this.onFileClick(file.fileid,file.name,this.props.activeUserData.loginData.userid)}/>
+                                    </IconButton>
+                                
+
+                                {/* <RaisedButton label="Download" style={{marginTop:"15px"}} backgroundColor={green300}
+                                    onClick={()=>this.onFileClick(file.fileid,file.name,this.props.activeUserData.loginData.userid)}
+                                    /> */}
+                            </div>
+                            <div className="col-md-4">
+                                <IconButton iconStyle={styles.iconStyles.smallIcon}
+                                    style={styles.iconStyles.small} tooltip="Share"
+                                        >
+                                        <Share onClick={()=> this.onFileShareClick(file.fileid,this.props.activeUserData.loginData.userid)}/>
+                                    </IconButton>
+                            </div>
+                            <div className="col-md-4">
+
+                                <IconButton iconStyle={styles.iconStyles.smallIcon}
+                                        style={styles.iconStyles.small} tooltip="Delete"
+                                            >
+                                            <FileDelete onClick={()=> this.deleteFile(file.fileid,this.props.activeUserData.loginData.userid)}/>
+                                </IconButton>
+
+                                {/* <RaisedButton label="Delete" style={{marginTop:"15px"}} backgroundColor={red300}
+                                    onClick={()=>this.deleteFile(file.fileid,this.props.activeUserData.loginData.userid)}
+                                    /> */}
+                            </div>
+                            </ListItem>
+                        </div>
+                        <Divider style={{marginLeft:"13px"}}/>
+                    </div>
+                    
+             
             );   
         });
 
-                    
-        
     }
 
+    
     createFolderList() {
     
         //console.log("files: "+Object.keys(this.props.files).length)
         return this.props.folders.map((folder) => {
             return(
+                
                 <div>
-                    <ListItem
-                        key = {folder.folderid}
-                        disabled={false}
-                        size={50}
-                        onClick={()=>this.onFolderClick(folder.folderid,folder.name)}
-                        leftAvatar={
-                        <Avatar
-                            icon={<DriveFolder />}
-                            color={blue500}
-                            backgroundColor={grey200}
-                            size={40}
-                            style={{marginLeft: 10}}
-                            
-                        />
-                        }><div className="row"><p style={{marginLeft:10}}>
-                            {folder.name}</p>
+                    <div className="row">
+                        
+                        <div className="col-md-9">
+                            <div className="col-md-6">
+                                <ListItem
+                                    key = {folder.folderid}
+                                    disabled={false}
+                                    onClick={()=>this.onFolderClick(folder.folderid,folder.name)}>
+
+                                    <div className="row">
+                                        <div className="col-md-3">
+                                        <Avatar
+                                            icon={<DriveFolder />}
+                                            color={blue500}
+                                            backgroundColor={grey100}
+                                            
+                                        />
+                                        </div>
+                                        <div className="col-md-6" style={{marginTop:"13px"}}>
+                                            {folder.name}
+                                        </div>
+                                    </div>
+                                </ListItem>
                             </div>
-                    </ListItem>
-                    <RaisedButton label="Delete" style={styles.mLeft} backgroundColor={red400}
-                        onClick={()=>this.deleteFolder(folder.folderid,this.props.activeUserData.loginData.userid)}
-                    />
-                    <hr style={{borderWidth:"1px"}}/>
+                            <div className="col-md-2">
+                               <ListItem disabled={true}>
+                                {!folder.starred &&<IconButton iconStyle={styles.iconStyles.verySmallIcon} tooltip="Star"
+                                    onClick={()=> this.onStarFolderClick(folder.folderid)}>
+                               
+                                    <StarBlank backgroundColor={fullWhite} color={blue500}
+                                        style={styles.iconStyles.verySmall} 
+                                        onClick={()=> this.onStarFolderClick(folder.folderid)}/>
+                                 </IconButton>}
+                                 {folder.starred &&<IconButton iconStyle={styles.iconStyles.verySmallIcon} tooltip="UnStar"
+                                    onClick={()=> this.onUnStarFolderClick(folder.folderid)}>
+                               
+                                   <StarShaded backgroundColor={fullWhite} color={blue500}
+                                        style={styles.iconStyles.verySmall} 
+                                        onClick={()=> this.onUnStarFolderClick(folder.folderid)}/>
+                                 </IconButton>}
+                                </ListItem>
+                            </div>
+                            <div className="col-md-4">
+                                <ListItem disabled={true}>
+                                    <div className="row" style={{marginTop:"13px"}}>
+                                        
+                                        {folder.dateUploaded}
+                                    
+                                    </div>
+                                </ListItem>
+                            </div>
+                            
+                        </div>
+                        
+                        <div className="col-md-3">
+                            <ListItem disabled={true}>
+                                <div className="col-md-4 col-md-offset-4">
+                                    <IconButton iconStyle={styles.iconStyles.smallIcon}
+                                        style={styles.iconStyles.small} tooltip="Share"
+                                            >
+                                            <Share onClick={()=> this.onFolderShareClick(folder.folderid,this.props.activeUserData.loginData.userid)}/>
+                                    </IconButton>
+                                </div>
+                                <div className="col-md-4">
+
+                                    <IconButton iconStyle={styles.iconStyles.smallIcon}
+                                                style={styles.iconStyles.small} tooltip="Delete"
+                                                    >
+                                                    <FileDelete onClick={ ()=>this.deleteFolder(folder.folderid,this.props.activeUserData.loginData.userid)}/>
+                                    </IconButton>
+                                        {/* <RaisedButton label="Delete" style={{marginTop:"15px"}} backgroundColor={red300}
+                                        onClick={()=>this.deleteFolder(folder.folderid,this.props.activeUserData.loginData.userid)}
+                                    /> */}
+                                </div>
+                            </ListItem>
+                            
+                        </div>
+                        <Divider style={{marginLeft:"13px"}}/>
+                    </div>
+                    
+                
                 </div>
             );   
         });
@@ -297,38 +483,72 @@ class CommonHome extends React.Component{
 
     render(){
         
-        console.log("Hey Im called");
         const overlayStyle = {
             top: 0,
             right: 0,
             bottom: 0,
             left: 0,
-            padding: '2.5em 0',
             background: 'rgba(0,0,0,0)',
             height:"100vh",
             color: '#fff'}
 
             return(
                 
-                <div className="row">
+                <div>
                     <div className="row" style={styles.accountMargin}>
                         <h1>Dropbox</h1>
                     </div>
                     <hr style={{borderWidth:"2px" ,borderStyle:"inset"}}/>
-                    <Dropzone 
-                        onDrop={this.onDrop.bind(this)} 
-                        style={overlayStyle}
-                        disableClick
-                        > 
-                        {this.props.createFolder.create && <CreateFolder/>}
-                        <MuiThemeProvider>
-                            <div>
-                                {this.createFolderList()}
-                                {this.createFileList()}
-                            </div>
-                        </MuiThemeProvider>
                     
-                    </Dropzone>
+                    <MuiThemeProvider>
+                        <div>
+                            {this.props.createFolder.create && <CreateFolder/>}
+                            <div className="row">
+                            
+                                <div className="col-md-9">
+                                
+                                    <div className="col-md-6">
+                                    <ListItem disabled={true}>
+                                        <div >
+                                            <div className="col-md-6 col-md-offset-2" style={{color:"#6b7684"}}>
+                                            Name
+                                            </div>
+                                        </div>
+                                    </ListItem>
+                                    </div>
+
+                                    <div className="col-md-3 col-md-offset-2" >
+                                        <ListItem disabled={true}>
+                                            <div className="row" style={{color:"#6b7684"}}>
+                                                Date Uploaded
+                                            </div>
+                                        </ListItem>
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                    </div>
+                    </MuiThemeProvider>
+                    
+                    <div className="row">
+                        <Dropzone 
+                            onDrop={this.onDrop.bind(this)} 
+                            style={overlayStyle}
+                            disableClick
+                            > 
+                            
+                            <MuiThemeProvider>
+                                <div>
+                                    {this.createFolderList()}
+                                
+                                    {this.createFileList()}
+                                    
+                                </div>
+                            </MuiThemeProvider>
+                        
+                        </Dropzone>
+                    </div>
                 </div>
                 
             );

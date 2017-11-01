@@ -14,7 +14,7 @@ function handle_request(msg, callback){
         const filesCollectionName = 'files'; 
         const filesCollection = db.collection(filesCollectionName);
 
-        filesCollection.find({ownerid,path}, function(err, fileData){
+        filesCollection.find({ownerid,path},{sort:{"dateUploaded":-1}}, function(err, fileData){
             if(err) throw err;
             else{
                 console.log("File is: "+fileData);

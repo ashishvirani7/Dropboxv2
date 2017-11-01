@@ -4,6 +4,7 @@ var fs = require('fs');
 var mongo = require("./mongo");
 var autoIncrement = require("mongodb-autoincrement");
 var mongoURL = "mongodb://localhost:27017/dropbox";
+const dateTime = require('date-time');
 
 function handle_request(msg, callback){
     
@@ -15,6 +16,8 @@ function handle_request(msg, callback){
     var ownerid = msg.ownerid;
     var filename = file.name;
     var newpath = './UserFiles/'+ownerid+path+filename;
+
+    
     
     fs.writeFile(newpath,Buffer.from(file.data),(err)=>{
         if(err) throw err;
@@ -35,13 +38,30 @@ function handle_request(msg, callback){
                         autoIncrement.getNextSequence(db, filesCollectionName, function (err, autoIndex) {
                             filesCollection.insert(
                                 {
-                                    fileid:autoIndex,
+                                    fileid: autoIndex.toString(),
                                     ownerid:ownerid,
                                     name:filename,
                                     path:path,
+                                    dateUploaded:dateTime(),
+                                    starred:false,
+
                                 }
                             );
                         });
+                        const activityCollectionName="activity";
+                        const activityCollection = db.collection(activityCollectionName);
+
+                        activityCollection.insert(
+                            {
+                                ownerid,
+                                activitytype:"File Uploaded",
+                                type:"file",
+                                date:dateTime(),
+                                name:filename,
+
+                            }
+                        );
+
                         res.code="201";
                         res.data="file uploaded";
                         callback(null,res);

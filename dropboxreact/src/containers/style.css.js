@@ -37,6 +37,26 @@ export default {
           width: 48,
           height: 48,
         }, 
+        smallIcon: {
+            width: 20,
+            height: 20,
+          },
+          
+          small: {
+            width: 20,
+            height: 20,
+            
+          }, 
+          verySmallIcon: {
+            width: 20,
+            height: 20,
+          },
+          
+          verySmall: {
+            width: 20,
+            height: 20,
+        
+          }, 
     },
     accountMargin :{
         marginLeft:"20px",

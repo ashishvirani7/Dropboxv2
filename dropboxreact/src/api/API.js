@@ -174,3 +174,108 @@ fetch(`${api}/deleteFolder`, {
         return error;
 });
 
+export const starFile = (payload) =>
+fetch(`${api}/starFile`, {
+    method: 'POST',
+    headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+    },
+    body:JSON.stringify(payload)
+}).then(res => {
+    return res;
+}).catch(error => {
+        console.log("This is error");
+        return error;
+});
+
+export const unStarFile = (payload) =>
+fetch(`${api}/unStarFile`, {
+    method: 'POST',
+    headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+    },
+    body:JSON.stringify(payload)
+}).then(res => {
+    return res;
+}).catch(error => {
+        console.log("This is error");
+        return error;
+});
+
+export const starFolder = (payload) =>
+fetch(`${api}/starFolder`, {
+    method: 'POST',
+    headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+    },
+    body:JSON.stringify(payload)
+}).then(res => {
+    return res;
+}).catch(error => {
+        console.log("This is error");
+        return error;
+});
+
+export const unStarFolder = (payload) =>
+fetch(`${api}/unStarFolder`, {
+    method: 'POST',
+    headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+    },
+    body:JSON.stringify(payload)
+}).then(res => {
+    return res;
+}).catch(error => {
+        console.log("This is error");
+        return error;
+});
+
+export const fileShare = (payload) =>
+fetch(`${api}/fileShare`, {
+    method: 'POST',
+    headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+    },
+    body:JSON.stringify(payload)
+}).then(res => {
+    return res;
+}).catch(error => {
+        console.log("This is error");
+        return error;
+});
+
+export const folderShare = (payload) =>
+fetch(`${api}/folderShare`, {
+    method: 'POST',
+    headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+    },
+    body:JSON.stringify(payload)
+}).then(res => {
+    return res;
+}).catch(error => {
+        console.log("This is error");
+        return error;
+});
+
+export const getActivity = (payload) =>
+fetch(`${api}/getActivity`, {
+    method: 'POST',
+    headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+    },
+    body:JSON.stringify(payload)
+}).then(res => {
+    return res;
+}).catch(error => {
+        console.log("This is error");
+        return error;
+});
+

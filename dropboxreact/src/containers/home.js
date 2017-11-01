@@ -34,6 +34,7 @@ import ActionAccountCircle from 'material-ui/svg-icons/action/account-circle';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import RaisedButton from 'material-ui/RaisedButton';
+
 import {
   blue300,
   indigo900,
@@ -93,7 +94,7 @@ class Home extends React.Component{
     componentWillMount(){
         API.doSessionCheck(this.props.activeUserData.loginData)
         .then((res) => {
-            if (res.status === 202) {
+            if (!res || res.status === 202) {
                     this.props.history.push("/login");
                 }
         });
@@ -150,28 +151,28 @@ class Home extends React.Component{
                 </MuiThemeProvider>
                 </div>
               </div>
-              <div className="col-md-7">
+              <div className="col-md-8">
                 <Route path='/home' component={CommonHome}/>
                 <Route exact path='/logs' component={Logs}/>
                 <Route exact path='/account' component={Account}/>
               </div>
-              <div className="col-md-3" style={divStyle}>
+              <div className="col-md-2" style={divStyle}>
                 <div className="row">
-                  <div className="col-md-3">
-                  <MuiThemeProvider>
-                      <div>
-                        <IconButton iconStyle={styles.iconStyles.mediumIcon}
-                          style={styles.iconStyles.medium} tooltip="Profile"
-                            onClick={()=> this.handleProfile()}>
-                          <ActionAccountCircle/>
-                        </IconButton>
-                        <h6 style={{marginLeft:"17px"}} onClick={()=> this.handleProfile()}> Account </h6>
-                      </div>
-                      
-                    </MuiThemeProvider>
+                  <div className="col-md-4">
+                    <MuiThemeProvider>
+                        <div>
+                            <IconButton iconStyle={styles.iconStyles.mediumIcon}
+                            style={styles.iconStyles.medium} tooltip="Profile"
+                                onClick={()=> this.handleProfile()}>
+                            <ActionAccountCircle/>
+                            </IconButton>
+                            <h6 style={{marginLeft:"17px"}} onClick={()=> this.handleProfile()}> Account </h6>
+                        </div>
+                        
+                        </MuiThemeProvider>
                   </div>
                 
-                  <div className="col-md-3">
+                  <div className="col-md-4">
                     <MuiThemeProvider>
                         <div>
                           <div className="row">

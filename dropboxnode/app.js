@@ -25,6 +25,11 @@ var createFolder = require('./routes/createFolder');
 var getFolders = require('./routes/getFolders');
 var deleteFile = require('./routes/deleteFile');
 var deleteFolder = require('./routes/deleteFolder');
+var starFile = require('./routes/starFile');
+var unStarFile = require('./routes/unStarFile');
+var starFolder = require('./routes/starFolder');
+var unStarFolder =require('./routes/unStarFolder');
+var getActivity = require('./routes/getActivity');
 
 var app = express();
 
@@ -73,5 +78,10 @@ app.use('/createFolder',createFolder);
 app.use('/getFolders',getFolders);
 app.use('/deleteFile',deleteFile);
 app.use('/deleteFolder',deleteFolder);
+app.use('/starFile',starFile);
+app.use('/unStarFile',unStarFile);
+app.use('/starFolder',starFolder);
+app.use('/unStarFolder',unStarFolder);
+app.use('/getActivity',getActivity);
 
 module.exports = app;

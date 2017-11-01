@@ -41,12 +41,12 @@ function handle_request(msg, callback){
                 bcrypt.hash(password, saltRounds, function(err, hash) {
                     autoIncrement.getNextSequence(db, loginCollectionName, function (err, autoIndex) {
                         loginCollection.insert({
-                            userid: autoIndex+'',
+                            userid: autoIndex.toString(),
                             username:username,
                             password:hash,
                         });
                         personalCollection.insert({
-                            userid: autoIndex+'',
+                            userid: autoIndex.toString(),
                             firstname,
                             lastname,
                         });

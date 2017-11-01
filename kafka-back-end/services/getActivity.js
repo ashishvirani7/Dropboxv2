@@ -6,19 +6,18 @@ function handle_request(msg, callback){
     //var req=msg.req;
     console.log("In handle request:"+ JSON.stringify(msg));
 
-    path = msg.path;
     ownerid= msg.ownerid;
     
     mongo.getConnection((connectionNumber,db)=>{
         console.log("no.: "+connectionNumber);
-        const foldersCollectionName = 'folders'; 
-        const foldersCollection = db.collection(foldersCollectionName);
-        
-        foldersCollection.find({ownerid,path},{sort:{"dateUploaded":-1}}, function(err, folderData){
+        const activityCollectionName = 'activity'; 
+        const activityCollection = db.collection(activityCollectionName);
+
+        activityCollection.find({ownerid},{sort:{"date":-1}}, function(err, activityData){
             if(err) throw err;
             else{
                 res.code="201";
-                res.data=folderData;
+                res.data=activityData;
                 callback(null,res);
             }
             mongo.releaseConnection(connectionNumber);

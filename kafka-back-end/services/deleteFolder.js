@@ -3,6 +3,7 @@ var mongoURL = "mongodb://localhost:27017/dropbox";
 var autoIncrement = require("mongodb-autoincrement");
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
+const dateTime = require('date-time');
 
 function handle_request(msg, callback){
 
@@ -29,6 +30,21 @@ function handle_request(msg, callback){
         foldersCollection.findOne({"folderid":folderid}, function(err, folderData){
             if(err) {flag=false;throw err;}
             else{
+
+                const activityCollectionName="activity";
+                const activityCollection = db.collection(activityCollectionName);
+
+                activityCollection.insert(
+                    {
+                        ownerid,
+                        activitytype:"Folder deleted",
+                        type:"folder",
+                        date:dateTime(),
+                        name:folderData.name,
+                        
+                    }
+                );
+
                 path=folderData.path;
                 name=folderData.name;
                 finalpath = "./UserFiles/"+ownerid+path+name;

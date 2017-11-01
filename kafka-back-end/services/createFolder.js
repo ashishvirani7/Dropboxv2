@@ -2,6 +2,7 @@ var mongo = require("./mongo");
 var mongoURL = "mongodb://localhost:27017/dropbox";
 var autoIncrement = require("mongodb-autoincrement");
 var mkdirp = require('mkdirp');
+const dateTime = require('date-time');
 
 function handle_request(msg, callback){
 
@@ -28,13 +29,31 @@ function handle_request(msg, callback){
                         
                         foldersCollection.insert(
                             {
-                                folderid:autoIndex,
+                                folderid:autoIndex.toString(),
                                 ownerid:ownerid,
                                 name:foldername,
                                 path:path,
+                                dateUploaded:dateTime(),
+                                starred:false,
                             }
                         );
                     });
+
+                    const activityCollectionName="activity";
+                    const activityCollection = db.collection(activityCollectionName);
+
+                    activityCollection.insert(
+                        {
+                            ownerid,
+                            activitytype:"Folder Uploaded",
+                            type:"folder",
+                            date:dateTime(),
+                            name:foldername,
+                            
+                        }
+                    );
+
+
                     var dir = './UserFiles/'+ownerid+path+foldername+'/'; 
                     mkdirp(dir, function(err){
                         if (err) {

@@ -1,5 +1,6 @@
 var mongo = require("./mongo");
 var fs = require('fs');
+const dateTime = require('date-time');
 
 function handle_request(msg, callback){
     
@@ -33,6 +34,20 @@ function handle_request(msg, callback){
                         callback(null,res);
                     }
                     else{
+                        
+                        const activityCollectionName="activity";
+                        const activityCollection = db.collection(activityCollectionName);
+
+                        activityCollection.insert(
+                            {
+                                ownerid,
+                                activitytype:"File Deleted",
+                                type:"file",
+                                date:dateTime(),
+                                name:name,
+                            }
+                        );
+
                         fs.unlink(finalpath, function(error) {
                             if (error) {
                                 throw error;

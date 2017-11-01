@@ -9,8 +9,8 @@ var topic_name = "delete_file_topic";
 
 router.post('/', function (req, res, next) {
     
-    var fileid= parseInt(req.body.fileid);
-    var ownerid= parseInt(req.body.userid);
+    var fileid= (req.body.fileid);
+    var ownerid= (req.body.userid);
 
     kafka.make_request(topic_name,{fileid,ownerid}, function(err,results){
         console.log('in result');

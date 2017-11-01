@@ -1,5 +1,6 @@
 var mongo = require("./mongo");
 var fs = require('fs');
+const dateTime = require('date-time');
 
 function handle_request(msg, callback){
     
@@ -22,6 +23,21 @@ function handle_request(msg, callback){
                 callback(null,res);
             }
             else{
+
+                const activityCollectionName="activity";
+                const activityCollection = db.collection(activityCollectionName);
+
+                activityCollection.insert(
+                    {
+                        ownerid,
+                        activitytype:"File Downloaded",
+                        type:"file",
+                        date:dateTime(),
+                        name:file.name,
+                    }
+                );
+
+
                 var finalPath = "./UserFiles/"+ownerid+file.path+file.name;
                 console.log(finalPath);
                 
