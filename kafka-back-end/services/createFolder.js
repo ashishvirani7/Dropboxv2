@@ -45,7 +45,7 @@ function handle_request(msg, callback){
                     activityCollection.insert(
                         {
                             ownerid,
-                            activitytype:"Folder Uploaded",
+                            activitytype:"Folder Created",
                             type:"folder",
                             date:dateTime(),
                             name:foldername,

@@ -19,6 +19,7 @@ import * as API from '../api/API';
 import CommonHome from './commonHome';
 import Logs from './logs';
 import Account from './account';
+import Share from './share';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import IconButton from 'material-ui/IconButton';
@@ -34,7 +35,7 @@ import ActionAccountCircle from 'material-ui/svg-icons/action/account-circle';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import RaisedButton from 'material-ui/RaisedButton';
-
+import TextField from 'material-ui/TextField';
 import {
   blue300,
   indigo900,
@@ -55,6 +56,11 @@ const style1 = {
   const divStyle ={
     backgroundColor:"#F8F9FA",
     height: "100vh"
+  };
+
+  const divStyle1 ={
+    height: "100vh",
+    overflow:"scroll"
   };
 
 
@@ -101,13 +107,13 @@ class Home extends React.Component{
     }    
 
     handleLogout(){
-        this.props.logout();
         API.doLogout(this.props.activeUserData.loginData)
         .then((res) => {
             if (res.status === 201) {
                 persistStore(store).purge();
                 NotificationManager.info( "Logout Successful","Bye", 2500, true);
                 this.props.history.push("/login");
+                this.props.logout();
             }
         });
         
@@ -121,40 +127,50 @@ class Home extends React.Component{
       //this.props.history.push("/home/"+this.state.path);
       this.props.createFolderDone();
       this.props.history.push("/home");
-      this.getFilesCall({path:"/home/",userid:this.props.activeUserData.loginData.userid});
-      this.getFoldersCall({path:"/home/",userid:this.props.activeUserData.loginData.userid});
+      //this.getFilesCall({path:"/home/",userid:this.props.activeUserData.loginData.userid});
+      //this.getFoldersCall({path:"/home/",userid:this.props.activeUserData.loginData.userid});
       this.props.setPath("/home");
       //window.location.reload();
     }
     
-      redirectToLogs(){
+    redirectToLogs(){
         //this.props.history.push("/logs/"+this.state.path);
         this.props.history.push("/logs");
+    }
+
+    redirectToShared(){
+        //this.props.history.push("/logs/"+this.state.path);
+        
+        this.props.history.push("/share");
     }
     
     render(){
         return(
             <div className="row">
               <div className="col-md-2" style={divStyle}>
-                <center>< img src={require('../images/dropbox.svg')} 
-                  style={styles.imageStyle}
+
+                <center>
+                    < img src={require('../images/dropbox.svg')} 
+                  style={styles.imageStyle} onClick={()=>{this.redirectToLogs()}}
                 /></center>
                 <div>
                 <MuiThemeProvider>
                   
                   <List style={style1}>
-                    <ListItem primaryText="Home" leftIcon={<ActionHome/>} color={blue300} onClick={()=>{this.redirectToLogs()}}/>
-                    <ListItem primaryText="Groups" leftIcon={<ActionGroup color={indigo900}/>} />
-                    <ListItem primaryText="Files" leftIcon={<DriveFile />} onClick={()=>{this.redirectToHome()}}/>
+                    <ListItem primaryText="My Files" style={{color:"#a2a9b2",marginLeft:"20px"}} onClick={()=>{this.redirectToHome()}}/>
+                    <ListItem primaryText="Sharing" style={{color:"#a2a9b2",marginLeft:"20px"}} onClick={()=> {this.redirectToShared()}}/>
+                    <ListItem primaryText="Deleted Files" style={{color:"#a2a9b2",marginLeft:"20px"}} onClick={()=>{this.redirectToHome()}}/>
                   </List>
                   
                 </MuiThemeProvider>
                 </div>
               </div>
-              <div className="col-md-8">
+              <div className="col-md-8" style={divStyle1}>
                 <Route path='/home' component={CommonHome}/>
                 <Route exact path='/logs' component={Logs}/>
                 <Route exact path='/account' component={Account}/>
+                <Route exact path='/share' component={Share}/>
+                
               </div>
               <div className="col-md-2" style={divStyle}>
                 <div className="row">

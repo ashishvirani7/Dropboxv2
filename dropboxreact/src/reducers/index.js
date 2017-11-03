@@ -7,6 +7,8 @@ import files from './getFilesReducer';
 import createFolder from './createFolderReducer';
 import folders from './getFoldersReducer';
 import activity from './activityReducer';
+import shareData from './shareReducer';
+import sharedFiles from './getSharedFilesReducer';
 
 const allReducers = combineReducers({
     loginData,
@@ -17,8 +19,9 @@ const allReducers = combineReducers({
     createFolder,
     folders,
     activity,
-    
-        
+    shareData,
+    sharedFiles,
+  
  });
  
  export default allReducers;

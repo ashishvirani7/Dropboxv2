@@ -4,19 +4,22 @@ import PropTypes from 'prop-types';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import Dropzone from 'react-dropzone';
 import fileDownload from 'js-file-download';
-
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+
 import {logout} from '../actions/logoutAction';
 import {getFiles} from '../actions/getFilesAction';
 import {getFolders} from '../actions/getFoldersAction';
 import {folderClick} from '../actions/folderClickAction';
 import {createFolderDone} from '../actions/createFolderAction';
 import {setPath} from '../actions/pathAction.js';
+import {share} from '../actions/shareAction';
+import {shareDone} from '../actions/shareAction';
 import styles from './style.css';
 import store from '../index';
 import * as API from '../api/API';
 import CreateFolder from './createFolder';
+import ShareModal from './shareModal';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import IconButton from 'material-ui/IconButton';
@@ -33,6 +36,7 @@ import FileDownload from 'material-ui/svg-icons/file/file-download';
 import FileDelete from 'material-ui/svg-icons/action/delete';
 import Share from 'material-ui/svg-icons/social/share';
 import Divider from 'material-ui/Divider';
+import TextField from 'material-ui/TextField';
 import {
   blue500,
   grey200,
@@ -254,27 +258,18 @@ class CommonHome extends React.Component{
         });
     }
 
-    onFileShareClick = (fileid) => {
+    onShareClick = (content,type,userid) => {
         this.props.createFolderDone();
-        API.fileShare({fileid})
-        .then(res => {
-            if(res.status===201){
-                this.getFilesCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
-                this.getFoldersCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
-            }
-        });
+        this.props.share({content,type,userid});
+        // API.fileShare({fileid})
+        // .then(res => {
+        //     if(res.status===201){
+        //         this.getFilesCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
+        //         this.getFoldersCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
+        //     }
+        // });
     }
     
-    onFolderShareClick = (folderid) => {
-        this.props.createFolderDone();
-        API.folderShare({folderid})
-        .then(res => {
-            if(res.status===201){
-                this.getFilesCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
-                this.getFoldersCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
-            }
-        });
-    }
     
 
     createFileList() {
@@ -291,7 +286,6 @@ class CommonHome extends React.Component{
                                     key = {file.fileid}
                                     disabled={true}
                                     size={50} >
-
                                     <div className="row">
                                         <div className="col-md-3">
                                         <Avatar
@@ -316,7 +310,7 @@ class CommonHome extends React.Component{
                                         style={styles.iconStyles.verySmall} 
                                         onClick={()=> this.onStarFileClick(file.fileid)}/>
                                 </IconButton>}
-                                {file.starred &&<IconButton iconStyle={styles.iconStyles.verySmallIcon} tooltip="UnStar"
+                                {file.starred &&<IconButton iconStyle={styles.iconStyles.verySmallIcon} tooltip="Remove From Star"
                                     onClick={()=> this.onUnStarFileClick(file.fileid)}>
                             
                                 <StarShaded backgroundColor={fullWhite} color={blue500}
@@ -356,7 +350,7 @@ class CommonHome extends React.Component{
                                 <IconButton iconStyle={styles.iconStyles.smallIcon}
                                     style={styles.iconStyles.small} tooltip="Share"
                                         >
-                                        <Share onClick={()=> this.onFileShareClick(file.fileid,this.props.activeUserData.loginData.userid)}/>
+                                        <Share onClick={()=> this.onShareClick(file,"file",this.props.activeUserData.loginData.userid)}/>
                                     </IconButton>
                             </div>
                             <div className="col-md-4">
@@ -401,16 +395,19 @@ class CommonHome extends React.Component{
 
                                     <div className="row">
                                         <div className="col-md-3">
-                                        <Avatar
-                                            icon={<DriveFolder />}
-                                            color={blue500}
-                                            backgroundColor={grey100}
+                                        
+                                            <Avatar
+                                                icon={<DriveFolder />}
+                                                color={blue500}
+                                                backgroundColor={grey100}      
+                                            />
                                             
-                                        />
                                         </div>
+                                        
                                         <div className="col-md-6" style={{marginTop:"13px"}}>
                                             {folder.name}
                                         </div>
+                                        
                                     </div>
                                 </ListItem>
                             </div>
@@ -423,7 +420,7 @@ class CommonHome extends React.Component{
                                         style={styles.iconStyles.verySmall} 
                                         onClick={()=> this.onStarFolderClick(folder.folderid)}/>
                                  </IconButton>}
-                                 {folder.starred &&<IconButton iconStyle={styles.iconStyles.verySmallIcon} tooltip="UnStar"
+                                 {folder.starred &&<IconButton iconStyle={styles.iconStyles.verySmallIcon} tooltip="Remove From Star"
                                     onClick={()=> this.onUnStarFolderClick(folder.folderid)}>
                                
                                    <StarShaded backgroundColor={fullWhite} color={blue500}
@@ -450,7 +447,7 @@ class CommonHome extends React.Component{
                                     <IconButton iconStyle={styles.iconStyles.smallIcon}
                                         style={styles.iconStyles.small} tooltip="Share"
                                             >
-                                            <Share onClick={()=> this.onFolderShareClick(folder.folderid,this.props.activeUserData.loginData.userid)}/>
+                                            <Share onClick={()=> this.onShareClick(folder,"folder",this.props.activeUserData.loginData.userid)}/>
                                     </IconButton>
                                 </div>
                                 <div className="col-md-4">
@@ -495,6 +492,7 @@ class CommonHome extends React.Component{
             return(
                 
                 <div>
+                    {this.props.shareData.isOpen && <ShareModal/>}
                     <div className="row" style={styles.accountMargin}>
                         <h1>Dropbox</h1>
                     </div>
@@ -502,7 +500,7 @@ class CommonHome extends React.Component{
                     
                     <MuiThemeProvider>
                         <div>
-                            {this.props.createFolder.create && <CreateFolder/>}
+                            
                             <div className="row">
                             
                                 <div className="col-md-9">
@@ -540,6 +538,7 @@ class CommonHome extends React.Component{
                             
                             <MuiThemeProvider>
                                 <div>
+                                    {this.props.createFolder.create && <CreateFolder/>}
                                     {this.createFolderList()}
                                 
                                     {this.createFileList()}
@@ -563,6 +562,8 @@ function mapStateToProps(state){
         files:state.files,
         createFolder:state.createFolder,
         folders:state.folders,
+        shareData:state.shareData,
+
     };
 }
 
@@ -575,6 +576,8 @@ function matchDispatchToProps(dispatch){
             folderClick,
             setPath,
             createFolderDone,
+            share,
+            shareDone,
 
         }
         ,dispatch);

@@ -98,7 +98,7 @@ class Login extends React.Component{
                             this.props.loginSuccess(user);
                             this.props.setPath("/home");
                             NotificationManager.success("Welcome", "Login Successful", 2500, true);
-                            this.props.history.push("/home");
+                            this.props.history.push("/logs");
                         });
                 
                     } else if (res.status === 401) {

@@ -5,6 +5,8 @@ import {connect} from 'react-redux';
 
 import Home from './containers/home';
 import Header from './containers/header';
+import ShareModal from './containers/shareModal';
+import Share from './containers/share';
 
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 
@@ -19,6 +21,8 @@ const  App = () => {
         <Route path="/home/" component={Home}/>
         <Route exact path="/account" component={Home}/>
         <Route exact path='/logs' component={Home}/>
+
+        <Route exact path='/share' component={Home}/>
         <NotificationContainer/>
       </div>);
 }

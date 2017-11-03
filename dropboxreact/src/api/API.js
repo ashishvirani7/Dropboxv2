@@ -279,3 +279,34 @@ fetch(`${api}/getActivity`, {
         return error;
 });
 
+export const share = (payload) =>
+fetch(`${api}/share`, {
+    method: 'POST',
+    headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+    },
+    body:JSON.stringify(payload)
+}).then(res => {
+    return res;
+}).catch(error => {
+        console.log("This is error");
+        return error;
+});
+
+export const getSharedFiles = (payload) =>
+fetch(`${api}/getSharedFiles`, {
+    method: 'POST',
+    headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+    },
+    body:JSON.stringify(payload)
+}).then(res => {
+    return res;
+}).catch(error => {
+        console.log("This is error");
+        return error;
+});
+
+

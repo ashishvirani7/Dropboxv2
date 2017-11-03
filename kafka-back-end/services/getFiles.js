@@ -6,8 +6,8 @@ function handle_request(msg, callback){
     //var req=msg.req;
     console.log("In handle request:"+ JSON.stringify(msg));
 
-    path = msg.path;
     ownerid= msg.ownerid;
+    path = msg.path;
     
     mongo.getConnection((connectionNumber,db)=>{
         console.log("no.: "+connectionNumber);
@@ -28,4 +28,3 @@ function handle_request(msg, callback){
      
 }
 exports.handle_request = handle_request;
-
