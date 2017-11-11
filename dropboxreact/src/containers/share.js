@@ -78,7 +78,38 @@ class Share extends React.Component{
                 }
         });
         this.getSharedFilesCall({userid:this.props.activeUserData.loginData.userid});
-    }
+    };
+
+    deleteFile = (fileid,userid,type) => {
+        
+        API.deleteFile({fileid,userid,type})
+        .then(res =>{
+            if(res.status===201){
+                this.getSharedFilesCall({userid:this.props.activeUserData.loginData.userid});
+            }
+        });
+    };
+
+    deleteFolder = (folderid,userid,type) => {
+        
+        API.deleteFolder({folderid,userid})
+        .then(res =>{
+            if(res.status===201){
+                this.getSharedFilesCall({userid:this.props.activeUserData.loginData.userid});
+            }
+        });
+    };
+
+    onFolderClick = (folderid,name) => {
+        console.log("folder id : "+folderid);
+        //this.getFilesCall({path:this.props.location.pathname+name,userid:this.props.activeUserData.loginData.userid});
+        console.log(this.props.path);
+        this.props.history.push(this.props.path+name);
+        
+        this.props.folderClick(name);
+        //window.location.reload();
+        //console.log("this is something: "+this.props.location.pathname);
+    };
 
     createFileList() {
         
@@ -112,18 +143,18 @@ class Share extends React.Component{
                              <div className="col-md-2">
                                  <ListItem disabled={true}>
                                  {!file.starred &&<IconButton iconStyle={styles.iconStyles.verySmallIcon} tooltip="Star"
-                                     onClick={()=> this.onStarFileClick(file.fileid)}>
+                                     >
                              
                                      <StarBlank backgroundColor={fullWhite} color={blue500}
                                          style={styles.iconStyles.verySmall} 
-                                         onClick={()=> this.onStarFileClick(file.fileid)}/>
+                                         />
                                  </IconButton>}
                                  {file.starred &&<IconButton iconStyle={styles.iconStyles.verySmallIcon} tooltip="Remove From Star"
-                                     onClick={()=> this.onUnStarFileClick(file.fileid)}>
+                                     >
                              
                                  <StarShaded backgroundColor={fullWhite} color={blue500}
                                          style={styles.iconStyles.verySmall} 
-                                         onClick={()=> this.onUnStarFileClick(file.fileid)}/>
+                                         />
                                  </IconButton>}
                                  </ListItem>
                              </div>
@@ -160,7 +191,7 @@ class Share extends React.Component{
                                  <IconButton iconStyle={styles.iconStyles.smallIcon}
                                          style={styles.iconStyles.small} tooltip="Delete"
                                              >
-                                             <FileDelete onClick={()=> this.deleteFile(file.fileid,this.props.activeUserData.loginData.userid)}/>
+                                             <FileDelete onClick={()=> this.deleteFile(file.fileid,this.props.activeUserData.loginData.userid,"shared")}/>
                                  </IconButton>
  
                                  {/* <RaisedButton label="Delete" style={{marginTop:"15px"}} backgroundColor={red300}
@@ -214,18 +245,18 @@ class Share extends React.Component{
                         <div className="col-md-2">
                                <ListItem disabled={true}>
                                 {!folder.starred &&<IconButton iconStyle={styles.iconStyles.verySmallIcon} tooltip="Star"
-                                    onClick={()=> this.onStarFolderClick(folder.folderid)}>
+                                    >
                                
                                     <StarBlank backgroundColor={fullWhite} color={blue500}
                                         style={styles.iconStyles.verySmall} 
-                                        onClick={()=> this.onStarFolderClick(folder.folderid)}/>
+                                        />
                                  </IconButton>}
                                  {folder.starred &&<IconButton iconStyle={styles.iconStyles.verySmallIcon} tooltip="Remove From Star"
-                                    onClick={()=> this.onUnStarFolderClick(folder.folderid)}>
+                                    >
                                
                                    <StarShaded backgroundColor={fullWhite} color={blue500}
                                         style={styles.iconStyles.verySmall} 
-                                        onClick={()=> this.onUnStarFolderClick(folder.folderid)}/>
+                                        />
                                  </IconButton>}
                                 </ListItem>
                         </div>
@@ -251,7 +282,7 @@ class Share extends React.Component{
                                     <IconButton iconStyle={styles.iconStyles.smallIcon}
                                                 style={styles.iconStyles.small} tooltip="Delete"
                                                     >
-                                                    <FileDelete onClick={ ()=>this.deleteFolder(folder.folderid,this.props.activeUserData.loginData.userid)}/>
+                                                    <FileDelete onClick={ ()=>this.deleteFolder(folder.folderid,this.props.activeUserData.loginData.userid,"shared")}/>
                                     </IconButton>
                                         {/* <RaisedButton label="Delete" style={{marginTop:"15px"}} backgroundColor={red300}
                                         onClick={()=>this.deleteFolder(folder.folderid,this.props.activeUserData.loginData.userid)}
@@ -274,7 +305,7 @@ class Share extends React.Component{
         return(
             <div>
                 <div className="row" style={styles.accountMargin}>
-                    <h1>Home</h1>
+                    <h1>Sharing</h1>
                 </div>
                 <hr style={{borderWidth:"2px" ,borderStyle:"inset"}}/>
                 <div className="row" style={styles.accountMargin}>
@@ -292,7 +323,7 @@ class Share extends React.Component{
                                 <ListItem disabled={true}>
                                     <div >
                                         <div className="col-md-6 col-md-offset-2" style={{color:"#6b7684"}}>
-                                        Name
+                                            Name
                                         </div>
                                     </div>
                                 </ListItem>

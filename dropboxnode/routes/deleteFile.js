@@ -11,8 +11,9 @@ router.post('/', function (req, res, next) {
     
     var fileid= (req.body.fileid);
     var ownerid= (req.body.userid);
+    var type = req.body.type;
 
-    kafka.make_request(topic_name,{fileid,ownerid}, function(err,results){
+    kafka.make_request(topic_name,{fileid,ownerid,type}, function(err,results){
         console.log('in result');
         console.log(results);
         if(err){

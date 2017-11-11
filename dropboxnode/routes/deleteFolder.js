@@ -16,9 +16,11 @@ String.prototype.replaceAll = function(search, replacement) {
 router.post('/', function (req, res, next) {
     var folderid= (req.body.folderid);
     var ownerid= (req.body.userid);
-    
-    kafka.make_request(topic_name,{folderid,ownerid}, function(err,results){
+    var type = req.body.type;
+    console.log("type is" +type);
+    kafka.make_request(topic_name,{folderid,ownerid,type}, function(err,results){
         console.log('in result');
+        
         console.log(results);
         if(err){
             done(err,{});

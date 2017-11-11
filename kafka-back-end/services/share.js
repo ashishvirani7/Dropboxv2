@@ -80,6 +80,7 @@ function handle_request(msg, callback){
                 res.data="User doesn't Exist";
                 callback(null,res);
             }
+            mongo.releaseConnection(connectionNumber);
         });
     });
     

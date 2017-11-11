@@ -23,6 +23,7 @@ const  App = () => {
         <Route exact path='/logs' component={Home}/>
 
         <Route exact path='/share' component={Home}/>
+        <Route exact path='/groups' component={Home}/>
         <NotificationContainer/>
       </div>);
 }

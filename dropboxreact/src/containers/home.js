@@ -20,6 +20,7 @@ import CommonHome from './commonHome';
 import Logs from './logs';
 import Account from './account';
 import Share from './share';
+import Groups from './groups';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import IconButton from 'material-ui/IconButton';
@@ -116,7 +117,6 @@ class Home extends React.Component{
                 this.props.logout();
             }
         });
-        
     }
 
     handleProfile(){
@@ -127,8 +127,8 @@ class Home extends React.Component{
       //this.props.history.push("/home/"+this.state.path);
       this.props.createFolderDone();
       this.props.history.push("/home");
-      //this.getFilesCall({path:"/home/",userid:this.props.activeUserData.loginData.userid});
-      //this.getFoldersCall({path:"/home/",userid:this.props.activeUserData.loginData.userid});
+      this.getFilesCall({path:"/home/",userid:this.props.activeUserData.loginData.userid});
+      this.getFoldersCall({path:"/home/",userid:this.props.activeUserData.loginData.userid});
       this.props.setPath("/home");
       //window.location.reload();
     }
@@ -143,26 +143,27 @@ class Home extends React.Component{
         
         this.props.history.push("/share");
     }
+
+    redirectToGroups(){
+        this.props.history.push("/groups");
+    }
     
     render(){
         return(
             <div className="row">
               <div className="col-md-2" style={divStyle}>
-
                 <center>
                     < img src={require('../images/dropbox.svg')} 
                   style={styles.imageStyle} onClick={()=>{this.redirectToLogs()}}
                 /></center>
                 <div>
-                <MuiThemeProvider>
-                  
-                  <List style={style1}>
-                    <ListItem primaryText="My Files" style={{color:"#a2a9b2",marginLeft:"20px"}} onClick={()=>{this.redirectToHome()}}/>
-                    <ListItem primaryText="Sharing" style={{color:"#a2a9b2",marginLeft:"20px"}} onClick={()=> {this.redirectToShared()}}/>
-                    <ListItem primaryText="Deleted Files" style={{color:"#a2a9b2",marginLeft:"20px"}} onClick={()=>{this.redirectToHome()}}/>
-                  </List>
-                  
-                </MuiThemeProvider>
+                    <MuiThemeProvider>
+                        <List style={style1}>
+                            <ListItem primaryText="My Files" style={{color:"#a2a9b2",marginLeft:"35px"}} onClick={()=>{this.redirectToHome()}}/>
+                            <ListItem primaryText="Sharing" style={{color:"#a2a9b2",marginLeft:"35px"}} onClick={()=> {this.redirectToShared()}}/>
+                            <ListItem primaryText="Sharing Groups" style={{color:"#a2a9b2",marginLeft:"35px"}} onClick={()=>{this.redirectToGroups()}}/>
+                        </List>
+                    </MuiThemeProvider>
                 </div>
               </div>
               <div className="col-md-8" style={divStyle1}>
@@ -170,7 +171,7 @@ class Home extends React.Component{
                 <Route exact path='/logs' component={Logs}/>
                 <Route exact path='/account' component={Account}/>
                 <Route exact path='/share' component={Share}/>
-                
+                <Route exact path='/groups' component={Groups}/>
               </div>
               <div className="col-md-2" style={divStyle}>
                 <div className="row">
@@ -184,8 +185,7 @@ class Home extends React.Component{
                             </IconButton>
                             <h6 style={{marginLeft:"17px"}} onClick={()=> this.handleProfile()}> Account </h6>
                         </div>
-                        
-                        </MuiThemeProvider>
+                    </MuiThemeProvider>
                   </div>
                 
                   <div className="col-md-4">
@@ -201,7 +201,6 @@ class Home extends React.Component{
                           </div>
                           
                         </div>
-                        
                       </MuiThemeProvider>
                   </div>
                 </div>
@@ -209,8 +208,7 @@ class Home extends React.Component{
                   
                     <MuiThemeProvider>
                       <div className="col-md-offset-1">
-                        
-                          <RaisedButton label="Create Folder"   backgroundColor="#2167f6" style={{marginTop:"40px"}}
+                          <RaisedButton label="Create Folder" backgroundColor="#2167f6" style={{marginTop:"40px"}}
                               onClick={()=> this.props.createFolder()}  
                           />
                       </div>
@@ -239,8 +237,6 @@ function matchDispatchToProps(dispatch){
             getFiles,
             getFolders,
             createFolderDone,
-
-
         }
         ,dispatch);
   }

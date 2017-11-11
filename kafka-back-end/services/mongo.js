@@ -8,19 +8,21 @@ var db;
 
 //Without Connection Pool
 exports.connect = function(url, callback){
-    MongoClient.connect(url,
-      function(err, _db){
-      if (err) { throw new Error('Could not connect: '+err); }
-      db = _db;
-      connected = true;
-      console.log(connected +" is connected?");
-      callback(db);
-    });
+    // MongoClient.connect(url,
+    //   function(err, _db){
+    //   if (err) { throw new Error('Could not connect: '+err); }
+    //   db = _db;
+    //   connected = true;
+    //   console.log(connected +" is connected?");
+    //   callback(db);
+		// });
+		var db = require('monk')('localhost/dropbox');
+		callback(db);
 };
 
 //With Connection Pool
 function getConnection() {
-	var db = require('monk')('localhost/dropbox')
+	var db = require('monk')('localhost/dropbox');
 	return db;
 }
 
@@ -58,7 +60,7 @@ Pool.prototype.release = function(connectionNumber) {
 };
 
 function initializeConnectionPool() {
-	var p = new Pool(10);
+	var p = new Pool(100);
 	return p;
 }
 var connectionPool=initializeConnectionPool();

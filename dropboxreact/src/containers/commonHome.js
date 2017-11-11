@@ -192,9 +192,9 @@ class CommonHome extends React.Component{
         //console.log("this is something: "+this.props.location.pathname);
     };
 
-    deleteFile = (fileid,userid) => {
+    deleteFile = (fileid,userid,type) => {
         this.props.createFolderDone();
-        API.deleteFile({fileid,userid})
+        API.deleteFile({fileid,userid,type})
         .then(res =>{
             if(res.status===201){
                 this.getFilesCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
@@ -203,9 +203,9 @@ class CommonHome extends React.Component{
         });
     };
 
-    deleteFolder = (folderid,userid) => {
+    deleteFolder = (folderid,userid,type) => {
         this.props.createFolderDone();
-        API.deleteFolder({folderid,userid})
+        API.deleteFolder({folderid,userid,type})
         .then(res =>{
             if(res.status===201){
                 this.getFilesCall({path:this.props.path,userid:this.props.activeUserData.loginData.userid});
@@ -358,7 +358,7 @@ class CommonHome extends React.Component{
                                 <IconButton iconStyle={styles.iconStyles.smallIcon}
                                         style={styles.iconStyles.small} tooltip="Delete"
                                             >
-                                            <FileDelete onClick={()=> this.deleteFile(file.fileid,this.props.activeUserData.loginData.userid)}/>
+                                            <FileDelete onClick={()=> this.deleteFile(file.fileid,this.props.activeUserData.loginData.userid,"own")}/>
                                 </IconButton>
 
                                 {/* <RaisedButton label="Delete" style={{marginTop:"15px"}} backgroundColor={red300}
@@ -455,7 +455,7 @@ class CommonHome extends React.Component{
                                     <IconButton iconStyle={styles.iconStyles.smallIcon}
                                                 style={styles.iconStyles.small} tooltip="Delete"
                                                     >
-                                                    <FileDelete onClick={ ()=>this.deleteFolder(folder.folderid,this.props.activeUserData.loginData.userid)}/>
+                                                    <FileDelete onClick={ ()=>this.deleteFolder(folder.folderid,this.props.activeUserData.loginData.userid,"own")}/>
                                     </IconButton>
                                         {/* <RaisedButton label="Delete" style={{marginTop:"15px"}} backgroundColor={red300}
                                         onClick={()=>this.deleteFolder(folder.folderid,this.props.activeUserData.loginData.userid)}
@@ -509,7 +509,7 @@ class CommonHome extends React.Component{
                                     <ListItem disabled={true}>
                                         <div >
                                             <div className="col-md-6 col-md-offset-2" style={{color:"#6b7684"}}>
-                                            Name
+                                                Name
                                             </div>
                                         </div>
                                     </ListItem>
