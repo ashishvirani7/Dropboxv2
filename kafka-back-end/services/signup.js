@@ -1,5 +1,5 @@
 var mongo = require("./mongo");
-var mongoURL = "mongodb://localhost:27017/dropbox";
+var mongoURL = "mongodb://10.0.0.184:27017/dropbox";
 var autoIncrement = require("mongodb-autoincrement");
 var mkdirp = require('mkdirp');
 var bcrypt = require('bcrypt');
